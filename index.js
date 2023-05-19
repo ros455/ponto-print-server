@@ -4,7 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import * as UsersController from './controllers/UserController.js';
 import * as BlogController from './controllers/BlogController.js';
-// import * as CalculatorController from './controllers/CalculatorController.js';
+import * as CalculatorController from './controllers/CalculatorController.js';
 
 dotenv.config();
 const app = express();
@@ -27,8 +27,8 @@ app.patch('/update-discount',UsersController.updateDiscount);
 app.post('/create-post',BlogController.addNewPost);
 app.patch('/update-post',BlogController.updatePost);
 app.delete('/remove-post',BlogController.removePost);
-// app.post('/create-calc',CalculatorController.createCalculator);
-// app.get('/get-all-calc',CalculatorController.getAll);
+app.post('/create-calc',CalculatorController.createCalculator);
+app.get('/get-all-calc',CalculatorController.getAll);
 
 app.listen(process.env.PORT,() => {
     console.log('server start',process.env.PORT)
