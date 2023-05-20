@@ -2,10 +2,7 @@ import mongoose from "mongoose";
 
 const CalculatorSchema = new mongoose.Schema({
         name: String,
-        price: Number,
         eyeletsSizePrice: Number,
-        mounting: Number,
-        stamp: Number,
         stretchOnTheStretcher: Number,
         eyelets: [{
             name: String,
@@ -14,6 +11,8 @@ const CalculatorSchema = new mongoose.Schema({
         goods: [{
             name: String,
             price: Number,
+            mounting: Number,
+            stamp: Number,
             quality: [{
                 name: String,
                 price: Number
@@ -35,6 +34,7 @@ const CalculatorSchema = new mongoose.Schema({
                 price: Number
             }],
             color: [{
+                imageColor: String,
                 name: String,
                 price: Number
             }],

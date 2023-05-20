@@ -145,3 +145,13 @@ export const removeUser = async (req, res) => {
       res.status(500).json({ error: 'Помилка видалення поста' });
     }
   };
+
+  export const getAll = async (req,res) => {
+    try{
+        const allData = await UserModel.find();
+
+        res.json(allData)
+    } catch (error) {
+        console.log(error);
+    }
+}

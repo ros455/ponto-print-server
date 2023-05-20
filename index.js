@@ -2,9 +2,12 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import * as UsersController from './controllers/UserController.js';
-import * as BlogController from './controllers/BlogController.js';
-import * as CalculatorController from './controllers/CalculatorController.js';
+import multer from 'multer';
+import fs from "fs"
+
+import BlogRouter from './router/Blogrouter.js'
+import UserRouter from './router/UserRouter.js'
+import CalculatorRouter from './router/CalculatorRouter.js'
 
 dotenv.config();
 const app = express();
@@ -19,16 +22,11 @@ mongoose
 app.use(cors());
 app.use(express.json())
 
-app.post('/register-user',UsersController.register);
-app.post('/login-user',UsersController.login);
-app.delete('/remove-user',UsersController.removeUser);
-app.patch('/update-balance',UsersController.updateBalance);
-app.patch('/update-discount',UsersController.updateDiscount);
-app.post('/create-post',BlogController.addNewPost);
-app.patch('/update-post',BlogController.updatePost);
-app.delete('/remove-post',BlogController.removePost);
-app.post('/create-calc',CalculatorController.createCalculator);
-app.get('/get-all-calc',CalculatorController.getAll);
+app.use('/uploads',express.static('uploads'))
+
+app.use(BlogRouter)
+app.use(UserRouter)
+app.use(CalculatorRouter)
 
 app.listen(process.env.PORT,() => {
     console.log('server start',process.env.PORT)

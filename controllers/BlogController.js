@@ -1,11 +1,22 @@
 import BlogModel from '../models/Blog.js';
 
+export const getAll = async (req,res) => {
+    try{
+        const allData = await BlogModel.find();
+
+        res.json(allData)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 export const addNewPost = async (req,res) => {
     try{
         const {image, title, description} = req.body;
 
         const post = await BlogModel.create({
-            image,
+            image: `/uploads/${req.file.originalname}`,
             title, 
             description
         })
@@ -19,12 +30,17 @@ export const addNewPost = async (req,res) => {
 export const updatePost = async (req,res) => {
     try{
         const {image, title, description} = req.body;
-        const postId = '646651d1355da81b6439459f';
-        const post = await BlogModel.findById(postId)
-        post.image = image;
-        post.title = title;
-        post.description = description;
-        await post.save();
+        console.log('image',image);
+        const postId = '6468a4ba032ea68bb8ce5799';
+
+        const post = await BlogModel.updateOne(
+            {_id: postId},
+            {
+                title: title,
+                description: description,
+                image: `/uploads/${req.file.originalname}`,
+            }
+        )
         res.json(post)
     } catch(error) {
         console.log(error);
