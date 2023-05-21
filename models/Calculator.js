@@ -4,16 +4,16 @@ const CalculatorSchema = new mongoose.Schema({
         name: String,
         eyeletsSizePrice: Number,
         stretchOnTheStretcher: Number,
-        eyelets: [{
-            name: String,
-            price: Number
-        }],
         goods: [{
             name: String,
             price: Number,
             mounting: Number,
             stamp: Number,
             quality: [{
+                name: String,
+                price: Number
+            }],
+            eyelets: [{
                 name: String,
                 price: Number
             }],

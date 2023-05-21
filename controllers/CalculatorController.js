@@ -13,12 +13,11 @@ export const getAll = async (req,res) => {
 
 export const createCalculator = async (req, res) => {
     try{
-        const { name, eyeletsSizePrice, eyelets, mounting, stamp, stretchOnTheStretcher, goods, } = req.body;
+        const { name, eyeletsSizePrice, mounting, stamp, stretchOnTheStretcher, goods, } = req.body;
 
         const data = await CalculatorModel.create({
             name,
             eyeletsSizePrice,
-            eyelets,
             mounting,
             stamp,
             stretchOnTheStretcher,
@@ -160,9 +159,11 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsQuality = async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
+        console.log('currentItemIndex',currentItemIndex);
         const calculatorId = '6467638eafb3ddd2e9090eac';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -170,7 +171,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[0].quality[1].price = 50;
+        calculator.goods[goodsIndex].quality[currentItemIndex].price = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
