@@ -13,14 +13,12 @@ export const getAll = async (req,res) => {
 
 export const createCalculator = async (req, res) => {
     try{
-        const { name, eyeletsSizePrice, mounting, stamp, stretchOnTheStretcher, goods, } = req.body;
+        const { name, mounting, stamp, goods, } = req.body;
 
         const data = await CalculatorModel.create({
             name,
-            eyeletsSizePrice,
             mounting,
             stamp,
-            stretchOnTheStretcher,
             goods
         });
 
@@ -57,11 +55,11 @@ export const createCalculator = async (req, res) => {
   }
 
   export const updateStretchOnTheStretcher = async (req,res) => {
-    const {price} = req.body;
+    const {price, mainId, goodsIndex, currentItemIndex} = req.body;
     try {
         const calculatorId = '6467a2e6185edade347871be';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -69,7 +67,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле eyeletsSizePrice
-        calculator.stretchOnTheStretcher = 50;
+        calculator.goods[goodsIndex].stretchOnTheStretcher = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
@@ -84,9 +82,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateEyeletsPrice = async (req,res) => {
     try {
-        const calculatorId = '6467638eafb3ddd2e9090eac';
+      const {price, mainId, goodsIndex, currentItemIndex} = req.body;
+      const calculatorId = '646a16847e3d4300561d3c58';
       // Знайти об'єкт Calculator за ідентифікатором
-      const calculator = await CalculatorModel.findById(calculatorId);
+      const calculator = await CalculatorModel.findById(mainId);
   
       if (!calculator) {
         // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -94,7 +93,7 @@ export const createCalculator = async (req, res) => {
       }
   
       // Оновити поле price в масиві eyelets
-      calculator.eyelets[1].price = 100;
+      calculator.goods[goodsIndex].eyelets[currentItemIndex].price = price;
   
       // Зберегти зміни в базі даних
       await calculator.save();
@@ -109,9 +108,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsMounting = async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '6467b9ed87567f5d7cb848f1';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -119,7 +119,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[0].mounting = 50;
+        calculator.goods[goodsIndex].mounting = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
@@ -134,9 +134,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsStamp = async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '6467b9ed87567f5d7cb848f1';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -144,7 +145,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[5].stamp = 50;
+        calculator.goods[goodsIndex].stamp = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
@@ -186,9 +187,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsCutting = async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '6467638eafb3ddd2e9090eac';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -196,7 +198,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[0].cutting[1].price = 100;
+        calculator.goods[goodsIndex].cutting[currentItemIndex].price = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
@@ -211,9 +213,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsSolderingOfGates = async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '6467638eafb3ddd2e9090eac';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -221,7 +224,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[0].solderingOfGates[1].price = 100;
+        calculator.goods[goodsIndex].solderingOfGates[currentItemIndex].price = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
@@ -236,9 +239,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsSolderingPockets = async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '6467638eafb3ddd2e9090eac';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -246,7 +250,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[0].solderingPockets[1].price = 100;
+        calculator.goods[goodsIndex].solderingPockets[currentItemIndex].price = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
@@ -286,9 +290,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsColor= async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '6467b9ed87567f5d7cb848f1';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -296,7 +301,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[5].color[1].price = 100;
+        calculator.goods[goodsIndex].color[currentItemIndex].price = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
@@ -336,9 +341,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsPoster= async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '64677e4fdbfee1e0f19d0dca';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -346,7 +352,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[1].poster[1].price = 100;
+        calculator.goods[goodsIndex].poster[currentItemIndex].price = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();

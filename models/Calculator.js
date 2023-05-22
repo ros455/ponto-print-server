@@ -2,13 +2,12 @@ import mongoose from "mongoose";
 
 const CalculatorSchema = new mongoose.Schema({
         name: String,
-        eyeletsSizePrice: Number,
-        stretchOnTheStretcher: Number,
         goods: [{
             name: String,
             price: Number,
             mounting: Number,
             stamp: Number,
+            stretchOnTheStretcher: Number,
             quality: [{
                 name: String,
                 price: Number
