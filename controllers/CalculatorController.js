@@ -265,9 +265,10 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsLamination = async (req,res) => {
     try {
+        const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         const calculatorId = '64677e4fdbfee1e0f19d0dca';
         // Знайти об'єкт Calculator за ідентифікатором
-        const calculator = await CalculatorModel.findById(calculatorId);
+        const calculator = await CalculatorModel.findById(mainId);
     
         if (!calculator) {
           // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
@@ -275,7 +276,7 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[0].lamination[1].price = 100;
+        calculator.goods[goodsIndex].lamination[currentItemIndex].price = price;
     
         // Зберегти зміни в базі даних
         await calculator.save();
