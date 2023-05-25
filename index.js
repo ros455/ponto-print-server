@@ -8,6 +8,10 @@ import UserRouter from './router/UserRouter.js';
 import CalculatorRouter from './router/CalculatorRouter.js';
 import TableRouter from './router/TableRouter.js';
 
+import * as TranslationsUaController from './controllers/TranslationsUaController.js';
+import * as TranslationsRuController from './controllers/TranslationsRuController.js';
+import * as CurrenyController from './controllers/CurrenyController.js';
+
 dotenv.config();
 const app = express();
 const db = 'mongodb+srv://roskichuk:qwerty12345@cluster0.vizv4yq.mongodb.net/?retryWrites=true&w=majority';
@@ -28,6 +32,25 @@ app.use(BlogRouter);
 app.use(UserRouter);
 app.use(CalculatorRouter);
 app.use(TableRouter);
+
+app.post('/create-ru-text', TranslationsRuController.createText);
+app.get('/get-ru-text', TranslationsRuController.getText);
+
+app.post('/create-ua-text', TranslationsUaController.createText);
+app.get('/get-ua-text', TranslationsUaController.getText);
+
+app.get('/get-currency',CurrenyController.getCurrency);
+app.patch('/create-default-currency',CurrenyController.createDefaultCurrency);
+app.patch('/upadte-currency',CurrenyController.createAdminCurrency);
+
+
+
+setInterval(() => {
+    if (Date.now() >= Date.parse(new Date().toDateString() + ' 07:00:00') && Date.now() <= Date.parse(new Date().toDateString() + ' 08:00:00')) {
+        CurrenyController.createDefaultCurrency();
+    } 
+},1800000)
+
 
 app.listen(process.env.PORT,() => {
     console.log('server start',process.env.PORT)
