@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import moment from 'moment-timezone';
+import cookieParser from 'cookie-parser';
 
 import BlogRouter from './router/Blogrouter.js';
 import UserRouter from './router/UserRouter.js';
@@ -14,12 +15,18 @@ import * as TranslationsRuController from './controllers/TranslationsRuControlle
 import * as CurrenyController from './controllers/CurrenyController.js';
 
 const kyivTime = moment().tz('Europe/Kiev');
-const startTime = moment(kyivTime).set({ hour: 10, minute: 0, second: 0 }).valueOf();
-const endTime = moment(kyivTime).set({ hour: 11, minute: 0, second: 0 }).valueOf();
+const startTime = moment(kyivTime).set({ hour: 7, minute: 0, second: 0 }).valueOf();
+const endTime = moment(kyivTime).set({ hour: 8, minute: 0, second: 0 }).valueOf();
 
 dotenv.config();
 const app = express();
 const db = 'mongodb+srv://roskichuk:qwerty12345@cluster0.vizv4yq.mongodb.net/?retryWrites=true&w=majority';
+
+const corsOptions = {
+    origin:'*', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200,
+ }
 
 mongoose
 .connect(db)
@@ -27,8 +34,9 @@ mongoose
     console.log('DB Strat')
 })
 
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 
 app.use('/uploads',express.static('uploads'));
 app.use('/uploadsFile',express.static('uploadsFile'));
@@ -48,19 +56,12 @@ app.get('/get-currency',CurrenyController.getCurrency);
 app.patch('/create-default-currency',CurrenyController.createDefaultCurrency);
 app.patch('/upadte-currency',CurrenyController.createAdminCurrency);
 
-// setInterval(() => {
-//     const currentTime = Date.now();
-//     if (currentTime >= startTime && currentTime <= endTime) {
-//         CurrenyController.createDefaultCurrency();
-//     } 
-// }, 1800000);
-
-// setInterval(() => {
-//     const currentTime = Date.now();
-//     if (currentTime >= startTime && currentTime <= endTime) {
-//         CurrenyController.createDefaultCurrency();
-//     } 
-// }, 10000);
+setInterval(() => {
+    const currentTime = Date.now();
+    if (currentTime >= startTime && currentTime <= endTime) {
+        CurrenyController.createDefaultCurrency();
+    } 
+}, 1800000);
 
 console.log('test',Date.now());
 

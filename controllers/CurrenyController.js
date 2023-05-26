@@ -10,75 +10,9 @@ export const getCurrency = async (req,res) => {
     }
 }
 
-// export const createDefaultCurrency = async (req, res) => {
-//     try{
-//         const value = await fetch('https://ponto-print.herokuapp.com/get-currency')
-//         .then((res) => res.json())
-//         .then((res) => res[0]?.value)
-
-//         const currencyId = '646faf6bd812a1a42ea8129d';
-
-//         const response = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json')
-//         .then((res) => res.json())
-//         .then((res) => res[24])
-
-//         console.log('response.rate',response.rate);
-//         console.log('value',value);
-
-//         const resoult = await response.rate * value;
-
-//         console.log('resoult',resoult);
-
-//         const data = await CurrencyModel.updateOne(
-//             {_id: currencyId},
-//             {
-//                 currency: resoult.toFixed(2),
-//                 banckCurrency: response.rate.toFixed(2)
-//             }
-//         )
-
-//         res.json(data);
-//     } catch(e) {
-//         console.log(e);
-//     }
-//   }
-
-// export const createDefaultCurrency = async (req, res) => {
-//     try {
-//       const value = await fetch('https://ponto-print.herokuapp.com/get-currency')
-//         .then((res) => res.json())
-//         .then((data) => data[0]?.value)
-  
-//       const currencyId = '646faf6bd812a1a42ea8129d';
-  
-//       const response = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json')
-//         .then((res) => res.json())
-//         .then((data) => data[24])
-  
-//       console.log('response.rate', response.rate);
-//       console.log('value', value);
-  
-//       const resoult = await response.rate * value;
-  
-//       console.log('resoult', resoult);
-  
-//       const data = await CurrencyModel.updateOne(
-//         { _id: currencyId },
-//         {
-//           currency: resoult.toFixed(2),
-//           banckCurrency: response.rate.toFixed(2)
-//         }
-//       )
-  
-//       res.json(data);
-//     } catch (e) {
-//       console.log(e);
-//     }
-//   }
-
 export const createDefaultCurrency = async (req, res) => {
     try {
-      const valueResponse = await fetch('https://ponto-print.herokuapp.com/get-currency');
+      const valueResponse = await fetch('http://localhost:4444/get-currency');
       const valueData = await valueResponse.json();
       const value = valueData[0]?.value;
   
@@ -113,7 +47,7 @@ export const createDefaultCurrency = async (req, res) => {
 
         const currencyId = '646faf6bd812a1a42ea8129d';
 
-        const response = await fetch('https://ponto-print.herokuapp.com/get-currency')
+        const response = await fetch('http://localhost:4444/get-currency')
         .then((res) => res.json())
         .then((res) => res[0]?.banckCurrency)
 

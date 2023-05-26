@@ -155,3 +155,23 @@ export const removeUser = async (req, res) => {
         console.log(error);
     }
 }
+
+export const getMe = async (req,res) => {
+  try{
+      const user = await UserModel.findById(req.userId);
+
+      if(!user) {
+          return res.status(404).json({
+              messege: 'User not found'
+          })
+      }
+
+      const {password, ...userData} = user._doc
+      res.json(userData);
+  } catch(e) {
+      console.log(e)
+      res.status(500).json({
+          messege: "Not accsess"
+      })
+  }
+}

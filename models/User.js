@@ -11,7 +11,11 @@ const UserSchema = new mongoose.Schema({
         required: true,
         type: String,
     },
-    isAdmin: Boolean,
+    isadmin: {
+        type: Boolean,
+        default: false,
+        require: true,
+    },
     balance: Number,
     discount: Boolean,
     discountValue: Number
