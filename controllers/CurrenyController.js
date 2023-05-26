@@ -10,45 +10,102 @@ export const getCurrency = async (req,res) => {
     }
 }
 
+// export const createDefaultCurrency = async (req, res) => {
+//     try{
+//         const value = await fetch('http://localhost:4444/get-currency')
+//         .then((res) => res.json())
+//         .then((res) => res[0]?.value)
+
+//         const currencyId = '646faf6bd812a1a42ea8129d';
+
+//         const response = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json')
+//         .then((res) => res.json())
+//         .then((res) => res[24])
+
+//         console.log('response.rate',response.rate);
+//         console.log('value',value);
+
+//         const resoult = await response.rate * value;
+
+//         console.log('resoult',resoult);
+
+//         const data = await CurrencyModel.updateOne(
+//             {_id: currencyId},
+//             {
+//                 currency: resoult.toFixed(2),
+//                 banckCurrency: response.rate.toFixed(2)
+//             }
+//         )
+
+//         res.json(data);
+//     } catch(e) {
+//         console.log(e);
+//     }
+//   }
+
+// export const createDefaultCurrency = async (req, res) => {
+//     try {
+//       const value = await fetch('http://localhost:4444/get-currency')
+//         .then((res) => res.json())
+//         .then((data) => data[0]?.value)
+  
+//       const currencyId = '646faf6bd812a1a42ea8129d';
+  
+//       const response = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json')
+//         .then((res) => res.json())
+//         .then((data) => data[24])
+  
+//       console.log('response.rate', response.rate);
+//       console.log('value', value);
+  
+//       const resoult = await response.rate * value;
+  
+//       console.log('resoult', resoult);
+  
+//       const data = await CurrencyModel.updateOne(
+//         { _id: currencyId },
+//         {
+//           currency: resoult.toFixed(2),
+//           banckCurrency: response.rate.toFixed(2)
+//         }
+//       )
+  
+//       res.json(data);
+//     } catch (e) {
+//       console.log(e);
+//     }
+//   }
+
 export const createDefaultCurrency = async (req, res) => {
-    try{
-        const value = await fetch('https://ponto-print.herokuapp.com/get-currency')
-        .then((res) => res.json())
-        .then((res) => res[0]?.value)
-
-        const currencyId = '646faf6bd812a1a42ea8129d';
-
-        const response = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json')
-        .then((res) => res.json())
-        .then((res) => res[24])
-
-        console.log('response.rate',response.rate);
-        console.log('value',value);
-
-        // const data = await CurrencyModel.create({
-        //     currency: response.rate,
-        //     value: 50
-        // });
-
-        // const data = await CurrencyModel.findById(currencyId);
-
-        const resoult = await response.rate * value;
-
-        console.log('resoult',resoult);
-
-        const data = await CurrencyModel.updateOne(
-            {_id: currencyId},
-            {
-                currency: resoult.toFixed(2),
-                banckCurrency: response.rate.toFixed(2)
-            }
-        )
-
-        res.json(data);
-    } catch(e) {
-        console.log(e);
+    try {
+      const valueResponse = await fetch('http://localhost:4444/get-currency');
+      const valueData = await valueResponse.json();
+      const value = valueData[0]?.value;
+  
+      const currencyId = '646faf6bd812a1a42ea8129d';
+  
+      const response = await fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json');
+      const responseData = await response.json();
+      const currencyData = responseData[24];
+  
+      console.log('currencyData.rate', currencyData.rate);
+      console.log('value', value);
+  
+      const resoult = currencyData.rate * value;
+  
+      console.log('resoult', resoult);
+  
+      const data = await CurrencyModel.updateOne(
+        { _id: currencyId },
+        {
+          currency: resoult.toFixed(2),
+          banckCurrency: currencyData.rate.toFixed(2)
+        }
+      );
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
 
   export const createAdminCurrency = async (req, res) => {
     try{
@@ -56,7 +113,7 @@ export const createDefaultCurrency = async (req, res) => {
 
         const currencyId = '646faf6bd812a1a42ea8129d';
 
-        const response = await fetch('https://ponto-print.herokuapp.com/get-currency')
+        const response = await fetch('http://localhost:4444/get-currency')
         .then((res) => res.json())
         .then((res) => res[0]?.banckCurrency)
 

@@ -2,6 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import moment from 'moment-timezone';
 
 import BlogRouter from './router/Blogrouter.js';
 import UserRouter from './router/UserRouter.js';
@@ -11,6 +12,10 @@ import TableRouter from './router/TableRouter.js';
 import * as TranslationsUaController from './controllers/TranslationsUaController.js';
 import * as TranslationsRuController from './controllers/TranslationsRuController.js';
 import * as CurrenyController from './controllers/CurrenyController.js';
+
+const kyivTime = moment().tz('Europe/Kiev');
+const startTime = moment(kyivTime).set({ hour: 10, minute: 0, second: 0 }).valueOf();
+const endTime = moment(kyivTime).set({ hour: 11, minute: 0, second: 0 }).valueOf();
 
 dotenv.config();
 const app = express();
@@ -43,19 +48,19 @@ app.get('/get-currency',CurrenyController.getCurrency);
 app.patch('/create-default-currency',CurrenyController.createDefaultCurrency);
 app.patch('/upadte-currency',CurrenyController.createAdminCurrency);
 
-
-
 // setInterval(() => {
-//     if (Date.now() >= Date.parse(new Date().toDateString() + ' 07:00:00') && Date.now() <= Date.parse(new Date().toDateString() + ' 08:00:00')) {
+//     const currentTime = Date.now();
+//     if (currentTime >= startTime && currentTime <= endTime) {
 //         CurrenyController.createDefaultCurrency();
 //     } 
-// },1800000)
+// }, 1800000);
 
 setInterval(() => {
-    if (Date.now() >= Date.parse(new Date().toDateString() + ' 09:00:00') && Date.now() <= Date.parse(new Date().toDateString() + ' 10:00:00')) {
-        CurrenyController.sayHello();
+    const currentTime = Date.now();
+    if (currentTime >= startTime && currentTime <= endTime) {
+        CurrenyController.createDefaultCurrency();
     } 
-},10000)
+}, 10000);
 
 console.log('test',Date.now());
 
