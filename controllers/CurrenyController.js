@@ -80,3 +80,7 @@ export const createDefaultCurrency = async (req, res) => {
         console.log(e);
     }
   }
+
+  export const sayHello = () => {
+    console.log('hello World');
+  }

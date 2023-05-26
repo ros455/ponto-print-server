@@ -45,11 +45,19 @@ app.patch('/upadte-currency',CurrenyController.createAdminCurrency);
 
 
 
+// setInterval(() => {
+//     if (Date.now() >= Date.parse(new Date().toDateString() + ' 07:00:00') && Date.now() <= Date.parse(new Date().toDateString() + ' 08:00:00')) {
+//         CurrenyController.createDefaultCurrency();
+//     } 
+// },1800000)
+
 setInterval(() => {
-    if (Date.now() >= Date.parse(new Date().toDateString() + ' 07:00:00') && Date.now() <= Date.parse(new Date().toDateString() + ' 08:00:00')) {
-        CurrenyController.createDefaultCurrency();
+    if (Date.now() >= Date.parse(new Date().toDateString() + ' 09:00:00') && Date.now() <= Date.parse(new Date().toDateString() + ' 10:00:00')) {
+        CurrenyController.sayHello();
     } 
-},1800000)
+},10000)
+
+console.log('test',Date.now());
 
 
 app.listen(process.env.PORT,() => {
