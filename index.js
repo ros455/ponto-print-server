@@ -55,12 +55,12 @@ app.patch('/upadte-currency',CurrenyController.createAdminCurrency);
 //     } 
 // }, 1800000);
 
-setInterval(() => {
-    const currentTime = Date.now();
-    if (currentTime >= startTime && currentTime <= endTime) {
-        CurrenyController.createDefaultCurrency();
-    } 
-}, 10000);
+// setInterval(() => {
+//     const currentTime = Date.now();
+//     if (currentTime >= startTime && currentTime <= endTime) {
+//         CurrenyController.createDefaultCurrency();
+//     } 
+// }, 10000);
 
 console.log('test',Date.now());
 
