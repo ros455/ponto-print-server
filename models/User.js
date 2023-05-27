@@ -11,12 +11,17 @@ const UserSchema = new mongoose.Schema({
         required: true,
         type: String,
     },
-    isadmin: {
+    isAdmin: {
         type: Boolean,
         default: false,
         require: true,
     },
     balance: Number,
+    balanceHistory: [{
+        historyValue: String,
+        date: String,
+        action: String
+    }],
     discount: Boolean,
     discountValue: Number
 },{timestamps: true,})

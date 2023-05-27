@@ -10,6 +10,7 @@ router.post('/login-user',UsersController.login);
 router.delete('/remove-user',UsersController.removeUser);
 router.patch('/update-balance',UsersController.updateBalance);
 router.patch('/update-discount',UsersController.updateDiscount);
+router.patch('/update-name',UsersController.updateName);
 router.get('/get-all-user',UsersController.getAll);
 router.get('/get-me',checkAuth,corsPolicy,UsersController.getMe)
 

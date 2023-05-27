@@ -1,7 +1,9 @@
 import UserModel from '../models/User.js';
+// import BalanceHistoryModel from '../models/BalanceHistory.js';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
+import validator from 'validator';
 
 const JWT_SECRET = 'secret';
 
@@ -43,13 +45,15 @@ export const register = async (req, res) => {
             text: `Welcome to ponto-print. Your login: ${email}; Your password: ${password}` // текст листа
           };
 
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+          if(validator.isEmail(email)) {
+            transporter.sendMail(mailOptions, function(error, info){
+              if (error) {
+                console.log(error);
+              } else {
+                console.log('Email sent: ' + info.response);
+              }
+            });
+          }
         
         res.json({ ...userData, token });
 
@@ -91,46 +95,101 @@ export const login = async (req, res) => {
     }
 }
 
+// export const updateBalance = async (req, res) => {
+//     try{
+//       const {value, userId, action, date, historyValue} = req.body;
+
+//       console.log('value',value);
+//       console.log('userId',userId);
+//       console.log('action',action);
+//       console.log('date',date);
+//       console.log('historyValue',historyValue);
+
+//       const data = await UserModel.updateOne(
+//           {_id: userId},
+//           {
+//             balance: value,
+//           }
+//       )
+
+//       res.json(data);
+//   } catch(e) {
+//       console.log(e);
+//   }
+// }
+
 export const updateBalance = async (req, res) => {
-    try {
-        const userId = '6464c5715f682572bbec8404';
-        const newBalance = 100;
-        const user = await UserModel.findById(userId); // Знаходимо користувача за його ідентифікатором
-        if (!user) {
-          // Якщо користувач не знайдений, повертаємо помилку або виконуємо необхідні дії
-          console.log("Користувач не знайдений");
-          return;
-        }
-    
-        user.balance = newBalance; // Оновлюємо значення балансу
-        await user.save(); // Зберігаємо оновлений документ користувача
-    
-        res.json("Баланс користувача оновлено")
-      } catch (error) {
-        // Обробка помилок при роботі з базою даних
-        console.error("Помилка оновлення балансу:", error);
+  try {
+      const { value, userId, action, date, historyValue } = req.body;
+
+      console.log('value', value);
+      console.log('userId', userId);
+      console.log('action', action);
+      console.log('date', date);
+      console.log('historyValue', historyValue);
+
+      const user = await UserModel.findById(userId);
+
+      if (!user) {
+          return res.status(404).json({ error: 'Користувач не знайдений' });
       }
+
+      const newBalanceHistory = [...user.balanceHistory, {
+          historyValue,
+          date,
+          action
+      }];
+
+      const data = await UserModel.updateOne(
+          { _id: userId },
+          {
+              balance: value,
+              balanceHistory: newBalanceHistory
+          }
+      );
+
+      res.json(data);
+  } catch (e) {
+      console.log(e);
+      res.status(500).json({ error: 'Виникла помилка сервера' });
+  }
 }
 
+
 export const updateDiscount = async (req, res) => {
-    try {
-        const userId = '6464c5715f682572bbec8404';
-        const newDiscount = 10;
-        const user = await UserModel.findById(userId); // Знаходимо користувача за його ідентифікатором
-        if (!user) {
-          // Якщо користувач не знайдений, повертаємо помилку або виконуємо необхідні дії
-          console.log("Користувач не знайдений");
-          return;
+    try{
+      const {value, userId} = req.body;
+
+      const data = await UserModel.updateOne(
+          {_id: userId},
+          {
+            discountValue: value,
+          }
+      )
+
+      res.json(data);
+  } catch(e) {
+      console.log(e);
+  }
+}
+
+export const updateName = async (req, res) => {
+  try{
+    const {value, userId} = req.body;
+
+    console.log('WOrk');
+
+    const data = await UserModel.updateOne(
+        {_id: userId},
+        {
+          name: value,
         }
-    
-        user.discountValue = newDiscount; // Оновлюємо значення балансу
-        await user.save(); // Зберігаємо оновлений документ користувача
-    
-        res.json("Скидку користувача оновлено")
-      } catch (error) {
-        // Обробка помилок при роботі з базою даних
-        console.error("Помилка оновлення балансу:", error);
-      }
+    )
+
+    res.json(data);
+} catch(e) {
+    console.log(e);
+}
 }
 
 export const removeUser = async (req, res) => {
