@@ -47,7 +47,7 @@ export const createDefaultCurrency = async (req, res) => {
 
         const currencyId = '646faf6bd812a1a42ea8129d';
 
-        const response = await fetch('http://localhost:4444/get-currency')
+        const response = await fetch('https://ponto-print.herokuapp.com/get-currency')
         .then((res) => res.json())
         .then((res) => res[0]?.banckCurrency)
 
