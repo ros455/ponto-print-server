@@ -1,7 +1,6 @@
 import { Router } from "express";
 import * as UsersController from '../controllers/UserController.js';
 import checkAuth from "../utils/checkAuth.js";
-import corsPolicy from "../utils/corsPolicy.js";
 
 const router = new Router();
 
@@ -12,6 +11,6 @@ router.patch('/update-balance',UsersController.updateBalance);
 router.patch('/update-discount',UsersController.updateDiscount);
 router.patch('/update-name',UsersController.updateName);
 router.get('/get-all-user',UsersController.getAll);
-router.get('/get-me',checkAuth,corsPolicy,UsersController.getMe)
+router.get('/get-me',checkAuth,UsersController.getMe)
 
 export default router;
