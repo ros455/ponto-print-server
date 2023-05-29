@@ -22,12 +22,7 @@ export const createDefaultCurrency = async (req, res) => {
       const responseData = await response.json();
       const currencyData = responseData[24];
   
-      console.log('currencyData.rate', currencyData.rate);
-      console.log('value', value);
-  
       const resoult = currencyData.rate * value;
-  
-      console.log('resoult', resoult);
   
       const data = await CurrencyModel.updateOne(
         { _id: currencyId },
@@ -51,12 +46,7 @@ export const createDefaultCurrency = async (req, res) => {
         .then((res) => res.json())
         .then((res) => res[0]?.banckCurrency)
 
-        console.log('banck',response);
-        console.log('value',value);
-
         let resoult = await response * value;
-
-        console.log('resoult',resoult);
 
         const data = await CurrencyModel.updateOne(
             {_id: currencyId},

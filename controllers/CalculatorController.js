@@ -48,7 +48,6 @@ export const createCalculator = async (req, res) => {
 
         res.json(calculator)
     
-        console.log('eyeletsSizePrice updated successfully');
       } catch (error) {
         console.error('Error updating eyeletsSizePrice:', error);
       }

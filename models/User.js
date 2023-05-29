@@ -23,7 +23,11 @@ const UserSchema = new mongoose.Schema({
         action: String
     }],
     discount: Boolean,
-    discountValue: Number
-},{timestamps: true,})
+    discountValue: Number,
+    orders: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Table',
+    }]
+}, { timestamps: true });
 
 export default mongoose.model('User',UserSchema)

@@ -57,8 +57,6 @@ setInterval(() => {
     } 
 }, 1800000);
 
-console.log('test',Date.now());
-
 
 app.listen(process.env.PORT,() => {
     console.log('server start',process.env.PORT)

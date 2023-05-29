@@ -1,5 +1,5 @@
 import UserModel from '../models/User.js';
-// import BalanceHistoryModel from '../models/BalanceHistory.js';
+import moment from 'moment';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
@@ -95,44 +95,17 @@ export const login = async (req, res) => {
     }
 }
 
-// export const updateBalance = async (req, res) => {
-//     try{
-//       const {value, userId, action, date, historyValue} = req.body;
-
-//       console.log('value',value);
-//       console.log('userId',userId);
-//       console.log('action',action);
-//       console.log('date',date);
-//       console.log('historyValue',historyValue);
-
-//       const data = await UserModel.updateOne(
-//           {_id: userId},
-//           {
-//             balance: value,
-//           }
-//       )
-
-//       res.json(data);
-//   } catch(e) {
-//       console.log(e);
-//   }
-// }
-
 export const updateBalance = async (req, res) => {
   try {
-      const { value, userId, action, date, historyValue } = req.body;
-
-      console.log('value', value);
-      console.log('userId', userId);
-      console.log('action', action);
-      console.log('date', date);
-      console.log('historyValue', historyValue);
+      const { value, userId, action, historyValue } = req.body;
 
       const user = await UserModel.findById(userId);
 
       if (!user) {
           return res.status(404).json({ error: 'Користувач не знайдений' });
       }
+
+      const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
 
       const newBalanceHistory = [...user.balanceHistory, {
           historyValue,
@@ -205,32 +178,31 @@ export const removeUser = async (req, res) => {
     }
   };
 
-  export const getAll = async (req,res) => {
-    try{
-        const allData = await UserModel.find();
-
-        res.json(allData)
-    } catch (error) {
-        console.log(error);
-    }
+export const getAll = async (req, res) => {
+  try {
+    const allData = await UserModel.find().populate('orders');
+    res.json(allData);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-export const getMe = async (req,res) => {
-  try{
-      const user = await UserModel.findById(req.userId);
+export const getMe = async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.userId).populate('orders');
 
-      if(!user) {
-          return res.status(404).json({
-              messege: 'User not found'
-          })
-      }
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found'
+      });
+    }
 
-      const {password, ...userData} = user._doc
-      res.json(userData);
-  } catch(e) {
-      console.log(e)
-      res.status(500).json({
-          messege: "Not accsess"
-      })
+    const { password, ...userData } = user._doc;
+    res.json(userData);
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      message: 'Access denied'
+    });
   }
 }

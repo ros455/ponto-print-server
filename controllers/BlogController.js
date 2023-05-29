@@ -30,7 +30,6 @@ export const addNewPost = async (req,res) => {
 export const updatePost = async (req,res) => {
     try{
         const {image, title, description} = req.body;
-        console.log('image',image);
         const postId = '6468a4ba032ea68bb8ce5799';
 
         const post = await BlogModel.updateOne(
