@@ -13,12 +13,20 @@ export const getAll = async (req,res) => {
 
 export const addNewPost = async (req,res) => {
     try{
-        const {image, title, description} = req.body;
+        const {blogImage, titleUa, titleRu, descriptionUa, descriptionRu} = req.body;
+
+        console.log('titleUa',titleUa);
+        console.log('titleRu',titleRu);
+        console.log('descriptionUa',descriptionUa);
+        console.log('descriptionRu',descriptionRu);
+        console.log('image',req.file.originalname);
 
         const post = await BlogModel.create({
-            image: `/uploads/${req.file.originalname}`,
-            title, 
-            description
+            blogImage: `/uploads/${req.file.originalname}`,
+            titleUa, 
+            titleRu, 
+            descriptionUa,
+            descriptionRu
         })
 
         res.json(post)
@@ -29,15 +37,17 @@ export const addNewPost = async (req,res) => {
 
 export const updatePost = async (req,res) => {
     try{
-        const {image, title, description} = req.body;
+        const {image, titleUa, titleRu, descriptionUa, descriptionRu} = req.body;
         const postId = '6468a4ba032ea68bb8ce5799';
 
         const post = await BlogModel.updateOne(
             {_id: postId},
             {
-                title: title,
-                description: description,
                 image: `/uploads/${req.file.originalname}`,
+                titleUa, 
+                titleRu, 
+                descriptionUa,
+                descriptionRu
             }
         )
         res.json(post)

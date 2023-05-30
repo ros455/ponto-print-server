@@ -4,9 +4,9 @@ import moment from 'moment';
 
 export const createTable = async (req, res) => {
     try {
-        const { file, fileName, material, quality, width, height, count, sum, conditions, status, notes, address } = req.body;
+        const { file, fileName, material, quality, width, height, count, sum, conditions, status, notes, address, userId } = req.body;
 
-        const userId = req.user._id;
+        // const userId = req.user._id;
         const user = await UserModel.findById(userId);
 
         const lastTable = await TableModel.findOne({}, {}, { sort: { id: -1 } });
