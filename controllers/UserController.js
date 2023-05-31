@@ -21,6 +21,7 @@ export const register = async (req, res) => {
             balance: 0,
             discount: false,
             discountValue: 0,
+            loggedIn: true,
             password: hash,
         });
 
@@ -81,13 +82,22 @@ export const login = async (req, res) => {
             })
         }
 
+        // const token = jwt.sign(
+        //     {id: user._id},
+        //     JWT_SECRET,
+        //     {expiresIn: '30d'}
+        // )
+
         const token = jwt.sign(
-            {id: user._id},
-            JWT_SECRET,
-            {expiresIn: '30d'}
-        )
+          { id: user._id, loggedIn: true },
+          JWT_SECRET,
+          { expiresIn: '30d' }
+        );
 
         const {passwordDoc, ...userData} = user._doc
+
+        user.loggedIn = true;
+        await user.save();
 
         res.json({...userData, token})
     } catch(e) {
@@ -206,3 +216,37 @@ export const getMe = async (req, res) => {
     });
   }
 }
+
+export const updatePassword = async (req, res) => {
+  const { userId, currentPassword, newPassword } = req.body;
+
+  try {
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: 'User not found',
+      });
+    }
+
+    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
+
+    if (!isValidPassword) {
+      return res.status(400).json({
+        message: 'Invalid current password',
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(newPassword, salt);
+
+    user.password = hash;
+    user.loggedIn = false;
+    await user.save();
+
+    res.json({ message: 'Password changed successfully' });
+  } catch (error) {
+    console.error('Помилка зміни пароля користувача:', error);
+    res.status(500).json({ message: 'Не вдалося змінити пароль користувача' });
+  }
+};

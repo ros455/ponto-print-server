@@ -17,7 +17,7 @@ export const createTable = async (req, res) => {
         const data = await TableModel.create({
             id,
             file,
-            fileName,
+            fileName: `${id}_${user.name}_${material}_${quality}_${width}_${height}`,
             material,
             quality,
             width,
