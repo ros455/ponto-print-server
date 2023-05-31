@@ -46,6 +46,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         type: String,
     },
+    disabled: {
+        type:Boolean,
+        default: false,
+    },
     loggedIn: {
         type:Boolean,
         default: true,

@@ -22,6 +22,7 @@ export const register = async (req, res) => {
             discount: false,
             discountValue: 0,
             loggedIn: true,
+            disabled: false,
             password: hash,
         });
 
@@ -73,6 +74,13 @@ export const login = async (req, res) => {
                 message: 'User not found',
             })
         }
+
+        if(user.disabled) {
+          console.log('disabled',user.disabled);
+          return res.status(404).json({
+              message: 'User disabled',
+          })
+      }
 
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.password);
 
@@ -175,6 +183,25 @@ export const updateName = async (req, res) => {
 }
 }
 
+export const updateDisabledStatus = async (req, res) => {
+  try{
+    const {value, userId} = req.body;
+
+    console.log('WOrk');
+
+    const data = await UserModel.updateOne(
+        {_id: userId},
+        {
+          disabled: value,
+        }
+    )
+
+    res.json(data);
+} catch(e) {
+    console.log(e);
+}
+}
+
 export const removeUser = async (req, res) => {
     try {
     //   const postId = req.params.postId;
@@ -218,7 +245,7 @@ export const getMe = async (req, res) => {
 }
 
 export const updatePassword = async (req, res) => {
-  const { userId, currentPassword, newPassword } = req.body;
+  const { userId, newPassword } = req.body;
 
   try {
     const user = await UserModel.findById(userId);
@@ -226,14 +253,6 @@ export const updatePassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         message: 'User not found',
-      });
-    }
-
-    const isValidPassword = await bcrypt.compare(currentPassword, user.password);
-
-    if (!isValidPassword) {
-      return res.status(400).json({
-        message: 'Invalid current password',
       });
     }
 
