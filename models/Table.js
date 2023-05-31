@@ -17,6 +17,7 @@ const TableSchema = new mongoose.Schema(
     sum: Number,
     notes: String,
     address: String,
+    descriptionDelete: String,
     status: {
       name: String,
       currentStatus: String,

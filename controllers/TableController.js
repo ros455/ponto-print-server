@@ -4,7 +4,7 @@ import moment from 'moment';
 
 export const createTable = async (req, res) => {
     try {
-        const { file, fileName, material, quality, width, height, count, sum, conditions, status, notes, address, userId } = req.body;
+        const { file, material, quality, width, height, count, sum, conditions, status, notes, address, userId } = req.body;
 
         // const userId = req.user._id;
         const user = await UserModel.findById(userId);
@@ -29,7 +29,8 @@ export const createTable = async (req, res) => {
             date,
             user,
             notes,
-            address
+            address,
+            descriptionDelete: ''
         });
 
       user.orders.push(data._id); // Додайте ідентифікатор замовлення до масиву `orders`
@@ -46,7 +47,8 @@ export const createTable = async (req, res) => {
 
 export const updateStatus = async (req, res) => {
   try {
-      const { tableId, value, name, paid } = req.body;
+      const { tableId, value, name, paid, descriptionDelete } = req.body;
+      console.log('descriptionDelete',descriptionDelete);
 
       const table = await TableModel.findById(tableId);
       if (!table) {
@@ -54,7 +56,7 @@ export const updateStatus = async (req, res) => {
               message: 'Table not found'
           });
       }
-
+      table.descriptionDelete = descriptionDelete;
       table.status.currentStatus = value;
       table.status.name = name;
       table.status.paid = paid;
