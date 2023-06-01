@@ -1,4 +1,5 @@
 import BlogModel from '../models/Blog.js';
+import fs from 'fs';
 
 export const getAll = async (req,res) => {
     try{
@@ -15,12 +16,6 @@ export const addNewPost = async (req,res) => {
     try{
         const {blogImage, titleUa, titleRu, descriptionUa, descriptionRu} = req.body;
 
-        console.log('titleUa',titleUa);
-        console.log('titleRu',titleRu);
-        console.log('descriptionUa',descriptionUa);
-        console.log('descriptionRu',descriptionRu);
-        console.log('image',req.file.originalname);
-
         const post = await BlogModel.create({
             blogImage: `/uploads/${req.file.originalname}`,
             titleUa, 
@@ -35,35 +30,102 @@ export const addNewPost = async (req,res) => {
     }
 }
 
-export const updatePost = async (req,res) => {
-    try{
-        const {image, titleUa, titleRu, descriptionUa, descriptionRu} = req.body;
-        const postId = '6468a4ba032ea68bb8ce5799';
+// export const updatePost = async (req, res) => {
+//     try {
+//       const { image, titleUa, titleRu, descriptionUa, descriptionRu, postId } = req.body;
+  
+//       const post = await BlogModel.findById(postId);
+  
+//       if (!post) {
+//         return res.status(404).json({ error: 'Пост не знайдено' });
+//       }
+  
+//       // Оновлення полів, крім картинки
+//       post.titleUa = titleUa;
+//       post.titleRu = titleRu;
+//       post.descriptionUa = descriptionUa;
+//       post.descriptionRu = descriptionRu;
 
-        const post = await BlogModel.updateOne(
-            {_id: postId},
-            {
-                image: `/uploads/${req.file.originalname}`,
-                titleUa, 
-                titleRu, 
-                descriptionUa,
-                descriptionRu
-            }
-        )
-        res.json(post)
-    } catch(error) {
-        console.log(error);
-        res.status(500).json({ error: "Помилка оновлення поста" });
+//       // Оновлення картинки, якщо передана нова картинка
+//       if (req.file.originalname) {
+//         // Видалення попередньої картинки
+//         const filename = post.blogImage;
+//         const previousImage = filename.slice(1);
+
+//         if (previousImage) {
+//           // Видалення попередньої картинки
+//           await fs.promises.unlink(previousImage);
+//         }
+  
+//         // Збереження нової картинки
+//         post.blogImage = `/uploads/${req.file.originalname}`;
+//       }
+  
+//       // Збереження оновленого запису в базі даних
+//       await post.save();
+  
+//       res.json(post);
+//     } catch (error) {
+//       console.log(error);
+//       res.status(500).json({ error: 'Помилка оновлення поста' });
+//     }
+//   };
+
+export const updatePost = async (req, res) => {
+    try {
+      const { image, titleUa, titleRu, descriptionUa, descriptionRu, postId } = req.body;
+  
+      const post = await BlogModel.findById(postId);
+  
+      if (!post) {
+        return res.status(404).json({ error: 'Пост не знайдено' });
+      }
+  
+      // Оновлення полів, крім картинки
+      post.titleUa = titleUa;
+      post.titleRu = titleRu;
+      post.descriptionUa = descriptionUa;
+      post.descriptionRu = descriptionRu;
+  
+      // Оновлення картинки, якщо передана нова картинка
+      if (req.file && req.file.originalname) {
+        // Видалення попередньої картинки
+        const filename = post.blogImage;
+        const previousImage = filename.slice(1);
+  
+        if (previousImage) {
+          // Видалення попередньої картинки
+          await fs.promises.unlink(previousImage);
+        }
+  
+        // Збереження нової картинки
+        post.blogImage = `/uploads/${req.file.originalname}`;
+      }
+  
+      // Збереження оновленого запису в базі даних
+      await post.save();
+  
+      res.json(post);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Помилка оновлення поста' });
     }
-}
+  };
+
 
 export const removePost = async (req, res) => {
     try {
-    //   const postId = req.params.postId;
-      const postId = '646651d1355da81b6439459f';
+      const { filename, postId } = req.body;
+      const newFileName = filename.slice(1);
+
+      fs.unlink(newFileName, (err) => {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({ message: 'Помилка при видаленні фото' });
+        }
+        res.json({ message: 'Фото успішно видалено' });
+      });
       await BlogModel.findByIdAndDelete(postId);
-  
-      res.json('Пост видалено');
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: 'Помилка видалення поста' });
