@@ -21,8 +21,9 @@ const uploadFile = multer({ storage: fileStorage })
 const router = new Router();
 
 // router.post('/create-table',checkAuth,uploadFile.single('file'),TableController.createTable);
-router.post('/create-table',TableController.createTable);
+router.post('/create-table',uploadFile.single('file'),TableController.createTable);
 router.get('/get-all-table',TableController.getAllTables);
 router.patch('/update-status',TableController.updateStatus);
+router.get('/download',TableController.downloadFile);
 
 export default router;

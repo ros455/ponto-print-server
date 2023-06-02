@@ -13,10 +13,11 @@ export const getAll = async (req,res) => {
 
 export const createCalculator = async (req, res) => {
     try{
-        const { name, mounting, stamp, goods, } = req.body;
+        const { nameUa, nameRu, mounting, stamp, goods, } = req.body;
 
         const data = await CalculatorModel.create({
-            name,
+            nameUa,
+            nameRu,
             mounting,
             stamp,
             goods

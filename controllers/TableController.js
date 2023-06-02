@@ -1,10 +1,18 @@
 import TableModel from '../models/Table.js';
 import UserModel from "../models/User.js";
 import moment from 'moment';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 export const createTable = async (req, res) => {
     try {
         const { file, material, quality, width, height, count, sum, conditions, status, notes, address, userId } = req.body;
+
+        const newStatus = JSON.parse(status);
+        const newConditions = JSON.parse(conditions);
+
+        console.log('newStatus',newStatus);
 
         // const userId = req.user._id;
         const user = await UserModel.findById(userId);
@@ -16,7 +24,7 @@ export const createTable = async (req, res) => {
 
         const data = await TableModel.create({
             id,
-            file,
+            file: `/uploadsFile/${req.file.originalname}`,
             fileName: `${id}_${user.name}_${material}_${quality}_${width}_${height}`,
             material,
             quality,
@@ -24,8 +32,8 @@ export const createTable = async (req, res) => {
             height,
             count,
             sum,
-            conditions,
-            status,
+            conditions: newConditions,
+            status: newStatus,
             date,
             user,
             notes,
@@ -42,6 +50,27 @@ export const createTable = async (req, res) => {
         res.status(500).json({
             message: "Error creating table"
         });
+    }
+}
+
+export const downloadFile = async (req,res) => {
+    try {
+    const id = req.query.id;
+    const table = await TableModel.findById(id);
+
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = dirname(__filename);
+      const filePath = path.join(__dirname, '..', table.file); // Отримайте шлях до файлу
+      console.log('filePath',filePath);
+
+      if(filePath) {
+        return res.download(filePath)
+        // return res.attachment(table.file).sendFile(filePath);
+      }
+      return res.status(400).json({message: 'Dowload error'})
+    } catch(e) {
+        console.log(e);
+        res.status(500).json({message: 'Upload error'})
     }
 }
 

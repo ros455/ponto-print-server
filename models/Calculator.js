@@ -1,44 +1,54 @@
 import mongoose from "mongoose";
 
 const CalculatorSchema = new mongoose.Schema({
-        name: String,
+        nameUa: String,
+        nameRu: String,
         goods: [{
-            name: String,
+            nameUa: String,
+            nameRu: String,
             price: Number,
             mounting: Number,
             stamp: Number,
             stretchOnTheStretcher: Number,
             quality: [{
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
             eyelets: [{
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
             cutting: [{
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
             solderingOfGates: [{
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
             solderingPockets: [{
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
             lamination: [{
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
             color: [{
                 imageColor: String,
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
             poster: [{
-                name: String,
+                nameUa: String,
+                nameRu: String,
                 price: Number
             }],
         }]

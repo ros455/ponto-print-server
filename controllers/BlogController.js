@@ -30,47 +30,6 @@ export const addNewPost = async (req,res) => {
     }
 }
 
-// export const updatePost = async (req, res) => {
-//     try {
-//       const { image, titleUa, titleRu, descriptionUa, descriptionRu, postId } = req.body;
-  
-//       const post = await BlogModel.findById(postId);
-  
-//       if (!post) {
-//         return res.status(404).json({ error: 'Пост не знайдено' });
-//       }
-  
-//       // Оновлення полів, крім картинки
-//       post.titleUa = titleUa;
-//       post.titleRu = titleRu;
-//       post.descriptionUa = descriptionUa;
-//       post.descriptionRu = descriptionRu;
-
-//       // Оновлення картинки, якщо передана нова картинка
-//       if (req.file.originalname) {
-//         // Видалення попередньої картинки
-//         const filename = post.blogImage;
-//         const previousImage = filename.slice(1);
-
-//         if (previousImage) {
-//           // Видалення попередньої картинки
-//           await fs.promises.unlink(previousImage);
-//         }
-  
-//         // Збереження нової картинки
-//         post.blogImage = `/uploads/${req.file.originalname}`;
-//       }
-  
-//       // Збереження оновленого запису в базі даних
-//       await post.save();
-  
-//       res.json(post);
-//     } catch (error) {
-//       console.log(error);
-//       res.status(500).json({ error: 'Помилка оновлення поста' });
-//     }
-//   };
-
 export const updatePost = async (req, res) => {
     try {
       const { image, titleUa, titleRu, descriptionUa, descriptionRu, postId } = req.body;
