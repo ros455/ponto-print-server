@@ -151,10 +151,13 @@ export const updateDiscount = async (req, res) => {
     try{
       const {value, userId} = req.body;
 
+      const newValeue = value / 100;
+      console.log('newValeue',newValeue);
+
       const data = await UserModel.updateOne(
           {_id: userId},
           {
-            discountValue: value,
+            discountValue: newValeue,
           }
       )
 

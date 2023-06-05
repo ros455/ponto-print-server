@@ -24,6 +24,7 @@ const router = new Router();
 router.post('/create-table',uploadFile.single('file'),TableController.createTable);
 router.get('/get-all-table',TableController.getAllTables);
 router.patch('/update-status',TableController.updateStatus);
+router.patch('/update-user-table-status',TableController.updateUserStatus);
 router.get('/download',TableController.downloadFile);
 
 export default router;

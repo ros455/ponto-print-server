@@ -100,6 +100,41 @@ export const updateStatus = async (req, res) => {
   }
 }
 
+export const updateUserStatus = async (req, res) => {
+  try {
+      const { tableId, value, name, } = req.body;
+
+      console.log('tableId',tableId);
+      console.log('value',value);
+      console.log('name',name);
+
+      const table = await TableModel.findById(tableId);
+      console.log('table.status.currentStatus',table.status.currentStatus);
+      if (!table) {
+          return res.status(404).json({
+              message: 'Table not found'
+          });
+      }
+
+      if (table.status.currentStatus == 'download') {
+        return res.status(404).json({
+            message: 'Table status worked'
+        });
+    }
+
+      table.status.currentStatus = value;
+      table.status.name = name;
+      await table.save();
+
+      res.json(table);
+  } catch (e) {
+      console.log(e);
+      res.status(500).json({
+          message: "Error updating current status"
+      });
+  }
+}
+
   export const getAllTables = async (req, res) => {
     try{
     const tables = await TableModel.find().populate('user');
