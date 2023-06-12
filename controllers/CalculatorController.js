@@ -83,6 +83,10 @@ export const createCalculator = async (req, res) => {
   export const updateEyeletsPrice = async (req,res) => {
     try {
       const {price, mainId, goodsIndex, currentItemIndex} = req.body;
+      console.log('price',price);
+      console.log('mainId',mainId);
+      console.log('goodsIndex',goodsIndex);
+      console.log('currentItemIndex',currentItemIndex);
       const calculatorId = '646a16847e3d4300561d3c58';
       // Знайти об'єкт Calculator за ідентифікатором
       const calculator = await CalculatorModel.findById(mainId);

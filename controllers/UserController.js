@@ -44,7 +44,7 @@ export const register = async (req, res) => {
             from: 'ros_kichuk@ukr.net', // електронна адреса, з якої відправляється лист
             to: email, // електронна адреса отримувача
             subject: 'Sucsesed registration', // тема листа
-            text: `Welcome to ponto-print. Your login: ${email}; Your password: ${password}` // текст листа
+            text: `Welcome to ponto-print. Your login: ${name}; Your password: ${password}` // текст листа
           };
 
           if(validator.isEmail(email)) {
@@ -67,9 +67,11 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const user = await UserModel.findOne({email: req.body.email});
-
+        const user = await UserModel.findOne({name: req.body.name});
+        console.log('req.body.name',req.body.name);
+        console.log('WORK');
         if(!user) {
+          console.log('uSER');
             return res.status(404).json({
                 message: 'User not found',
             })
@@ -85,6 +87,7 @@ export const login = async (req, res) => {
         const isValidPass = await bcrypt.compare(req.body.password, user._doc.password);
 
         if(!isValidPass) {
+          console.log('PASSWORD');
             return res.status(400).json({
                 message: 'Password not found',
             })
