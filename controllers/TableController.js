@@ -11,7 +11,6 @@ export const createTable = async (req, res) => {
 
         const newStatus = JSON.parse(status);
         const newConditions = JSON.parse(conditions);
-
         console.log('newStatus',newStatus);
 
         // const userId = req.user._id;
@@ -25,7 +24,11 @@ export const createTable = async (req, res) => {
         const data = await TableModel.create({
             id,
             file: `/uploadsFile/${req.file.originalname}`,
-            fileName: `${id}_${user.name}_${material}_${quality}_${width}_${height}`,
+            fileName: `${id}_${user.name}_${material}_${quality}_${width}_${height}${newConditions?.lamination?.name && '_' + newConditions.lamination.name}
+            ${newConditions?.cutting?.name && '_' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_' + newConditions.eyelets.name} 
+            ${newConditions?.mounting?.name && '_' + newConditions.mounting.name}${newConditions?.poster?.name && '_' + newConditions.poster.name}
+            ${newConditions?.solderGates?.name && '_' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_' + newConditions.solderPockets.name}
+            ${newConditions?.stamp?.name && '_' + newConditions.stamp.name}${newConditions?.stretch?.name && '_' + newConditions.stretch.name}`,
             material,
             quality,
             width,
@@ -62,6 +65,8 @@ export const downloadFile = async (req,res) => {
       const __dirname = dirname(__filename);
       const filePath = path.join(__dirname, '..', table.file); // Отримайте шлях до файлу
       console.log('filePath',filePath);
+      console.log('__filename',__filename);
+      console.log('table.file',table.file);
 
       if(filePath) {
         return res.download(filePath)
