@@ -35,16 +35,17 @@ export const register = async (req, res) => {
             port: 2525,
             secure: true,
             auth: {
-              user: 'ros_kichuk@ukr.net',
-              pass: 'yFs1TF9IcF897CtW'
+              user: 'ponto-print@ukr.net',
+              pass: 'Lm5ReeugyRBHUzcg'
+              // pass: 'yFs1TF9IcF897CtW'
             }
           });
 
           let mailOptions = {
-            from: 'ros_kichuk@ukr.net', // електронна адреса, з якої відправляється лист
+            from: 'ponto-print@ukr.net', // електронна адреса, з якої відправляється лист
             to: email, // електронна адреса отримувача
-            subject: 'Sucsesed registration', // тема листа
-            text: `Welcome to ponto-print. Your login: ${name}; Your password: ${password}` // текст листа
+            subject: 'Рєстрація пройшла успішно', // тема листа
+            text: `Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password}` // текст листа
           };
 
           if(validator.isEmail(email)) {

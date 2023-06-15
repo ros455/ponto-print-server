@@ -24,7 +24,7 @@ export const createTable = async (req, res) => {
         const data = await TableModel.create({
             id,
             file: `/uploadsFile/${req.file.originalname}`,
-            fileName: `${id}_${user.name}_${material}_${quality}_${width}_${height}${newConditions?.lamination?.name && '_' + newConditions.lamination.name}
+            fileName: `${id}_${user.name}_${material}_${quality}_${width}_${height}_${count}${newConditions?.lamination?.name && '_' + newConditions.lamination.name}
             ${newConditions?.cutting?.name && '_' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_' + newConditions.eyelets.name} 
             ${newConditions?.mounting?.name && '_' + newConditions.mounting.name}${newConditions?.poster?.name && '_' + newConditions.poster.name}
             ${newConditions?.solderGates?.name && '_' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_' + newConditions.solderPockets.name}
