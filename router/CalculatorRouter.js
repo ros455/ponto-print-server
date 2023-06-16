@@ -5,7 +5,7 @@ import fs from "fs"
 
 const router = new Router();
 
-const imageStorage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (_,__,cd) => {
         if(!fs.existsSync('uploads')) {
             fs.mkdirSync('uploads');
@@ -17,7 +17,7 @@ const imageStorage = multer.diskStorage({
     },
 })
 
-const uploadImage = multer({imageStorage})
+const uploadImage = multer({storage})
 
 router.post('/create-calc',CalculatorController.createCalculator);
 router.get('/get-all-calc',CalculatorController.getAll);
@@ -32,7 +32,7 @@ router.patch('/update-soldering-of-gates',CalculatorController.updateGoodsSolder
 router.patch('/update-soldering-pockets',CalculatorController.updateGoodsSolderingPockets);
 router.patch('/update-lamination',CalculatorController.updateGoodsLamination);
 router.patch('/update-color',CalculatorController.updateGoodsColor);
-router.patch('/update-color-image',uploadImage.single('img'),CalculatorController.updateGoodsColorImage);
+router.patch('/update-color-image',uploadImage.single('imageColor'),CalculatorController.updateGoodsColorImage);
 router.patch('/update-poster',CalculatorController.updateGoodsPoster);
 
 export default router;

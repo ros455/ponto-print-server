@@ -321,7 +321,7 @@ export const createCalculator = async (req, res) => {
 
   export const updateGoodsColorImage = async (req,res) => {
     try {
-        const calculatorId = '64690844bf642515b215f7d6';
+        const calculatorId = '6479a247e7f201dccc99fb47';
         // Знайти об'єкт Calculator за ідентифікатором
         const calculator = await CalculatorModel.findById(calculatorId);
     
@@ -331,14 +331,12 @@ export const createCalculator = async (req, res) => {
         }
     
         // Оновити поле mounting в масиві goods
-        calculator.goods[5].color[0].imageColor = `/uploads/${req.file.originalname}`;
+        calculator.goods[5].color[1].imageColor = `/uploads/${req.file.originalname}`;
     
         // Зберегти зміни в базі даних
         await calculator.save();
 
         res.json(calculator);
-    
-        console.log('Goods mounting updated successfully');
       } catch (error) {
         console.error('Error updating goods mounting:', error);
       }
