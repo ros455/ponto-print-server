@@ -11,11 +11,12 @@ import BlogRouter from './router/Blogrouter.js';
 import UserRouter from './router/UserRouter.js';
 import CalculatorRouter from './router/CalculatorRouter.js';
 import TableRouter from './router/TableRouter.js';
-import Table from './models/Table.js'
+import Table from './models/Table.js';
 
 import * as TranslationsUaController from './controllers/TranslationsUaController.js';
 import * as TranslationsRuController from './controllers/TranslationsRuController.js';
 import * as CurrenyController from './controllers/CurrenyController.js';
+import * as TableController from './controllers/TableController.js';
 
 const kyivTime = moment().tz('Europe/Kiev');
 const startTime = moment(kyivTime).set({ hour: 7, minute: 0, second: 0 }).valueOf();
@@ -67,6 +68,10 @@ setInterval(() => {
     CurrenyController.createDefaultCurrency();
   }
 }, 1800000);
+
+setInterval(() => {
+  TableController.checkedLongTimeFile();
+}, 86400000);
 
 const runFunc = async () => {
   try {

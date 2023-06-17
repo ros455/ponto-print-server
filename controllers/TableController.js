@@ -4,6 +4,7 @@ import moment from 'moment';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import Table from '../models/Table.js';
 
 export const createTable = async (req, res) => {
     try {
@@ -149,3 +150,28 @@ export const updateUserStatus = async (req, res) => {
         console.log(e);
       }
   }
+
+  export const checkedLongTimeFile = async (req, res) => {
+    try {
+        const currentDate = new Date(); // Поточна дата
+
+        const tables = await Table.find().select('createdAt file');
+        tables.filter((el) => {
+            const createdAt = el.createdAt; // Дата створення з MongoDB
+            const file = el.file;
+            const differenceInTime = currentDate.getTime() - createdAt.getTime(); // Різниця в мілісекундах
+            const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24)); // Різниця в днях
+
+            if(differenceInDays > 180) {
+                const newFileName = file.slice(1);
+                fs.unlink(newFileName, (err) => {
+                    if (err) {
+                    //   console.log(err);
+                    }
+                  });
+            }
+        });
+    } catch (e) {
+        console.log('Error', e);
+    }
+}
