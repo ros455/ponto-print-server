@@ -79,6 +79,31 @@ export const createCalculator = async (req, res) => {
         console.error('Error updating eyeletsSizePrice:', error);
       }
   }
+  export const updateStretchOnTheStretcherMin = async (req,res) => {
+    const {price, mainId, goodsIndex, currentItemIndex} = req.body;
+    try {
+        const calculatorId = '6467a2e6185edade347871be';
+        // Знайти об'єкт Calculator за ідентифікатором
+        const calculator = await CalculatorModel.findById(mainId);
+    
+        if (!calculator) {
+          // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
+          throw new Error('Calculator not found');
+        }
+    
+        // Оновити поле eyeletsSizePrice
+        calculator.goods[goodsIndex].stretchOnTheStretcherMin = price;
+    
+        // Зберегти зміни в базі даних
+        await calculator.save();
+
+        res.json(calculator)
+    
+        console.log('eyeletsSizePrice updated successfully');
+      } catch (error) {
+        console.error('Error updating eyeletsSizePrice:', error);
+      }
+  }
 
   export const updateEyeletsPrice = async (req,res) => {
     try {

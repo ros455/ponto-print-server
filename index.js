@@ -73,6 +73,10 @@ setInterval(() => {
   TableController.checkedLongTimeFile();
 }, 86400000);
 
+// setTimeout(() => {
+//   CurrenyController.createDefaultCurrency();
+// },1000)
+
 const runFunc = async () => {
   try {
     await client.connect();
@@ -99,18 +103,13 @@ const runFunc = async () => {
       switch (next.operationType) {
         case "insert":
           const { user } = next.fullDocument;
-          console.log('next.fullDocument',next.fullDocument);
-          console.log('user iD', user);
           io.emit('new table', {user: user});
-          console.log("table update", user);
           break;
         case "update":
           const { _id } = next.documentKey;
           const finalObject = next.updateDescription.updatedFields;
           let songStatus = false
-          console.log('_id',_id);
           const updatedDocument = await Table.findById(_id);
-          console.log('updatedDocument',updatedDocument.user);
 
           for (const key in finalObject) {
             if (finalObject.hasOwnProperty(key)) {
@@ -125,7 +124,6 @@ const runFunc = async () => {
 
           io.emit("update table", {user: updatedDocument.user, status: songStatus});
           
-          console.log("update", next.updateDescription.updatedFields);
           break;
       }
     });

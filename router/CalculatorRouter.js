@@ -23,6 +23,7 @@ router.post('/create-calc',CalculatorController.createCalculator);
 router.get('/get-all-calc',CalculatorController.getAll);
 router.patch('/update-eyelets-size-price',CalculatorController.updateEyeletsSizePrice);
 router.patch('/update-stretch-on-the-stretcher',CalculatorController.updateStretchOnTheStretcher);
+router.patch('/update-stretch-on-the-stretcher-min',CalculatorController.updateStretchOnTheStretcherMin);
 router.patch('/update-eyelets-price',CalculatorController.updateEyeletsPrice);
 router.patch('/update-mounting',CalculatorController.updateGoodsMounting);
 router.patch('/update-stamp',CalculatorController.updateGoodsStamp);

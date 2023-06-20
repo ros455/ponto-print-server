@@ -8,7 +8,7 @@ import Table from '../models/Table.js';
 
 export const createTable = async (req, res) => {
     try {
-        const { file, material, quality, width, height, count, sum, conditions, status, notes, address, userId } = req.body;
+        const { file, material, quality, width, height, count, sum, conditions, status, notes, address, userId, color } = req.body;
 
         const newStatus = JSON.parse(status);
         const newConditions = JSON.parse(conditions);
@@ -22,10 +22,62 @@ export const createTable = async (req, res) => {
 
         const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
 
+        let materialname = '';
+        switch(material) {
+            case 'Банер 440 гр. Ламінований' || 'Баннер 440 гр. Ламинированный':
+                materialname = 'Банер'
+                break;
+            case 'Банер 510 гр. литий' || 'Баннер 510 гр. литой':
+                materialname = 'Литой'
+                break;
+            case 'Просвітний банер 440 гр.' || 'Просветный баннер 440 гр.':
+                materialname = 'Просветный'
+                break;
+            case 'Сітка банерна 380 гр.' || 'Сетка баннерная 380 гр.':
+                materialname = 'Сетка'
+                break;
+            case 'Глянцева плівка' || 'Глянцевая пленка':
+                materialname = 'Глянцевая'
+                break;
+            case 'Матова плівка' || 'Матовая пленка':
+                materialname = 'Матовая'
+                break;
+            case 'Прозора глянцева плівка' || 'Прозрачная глянцевая пленка':
+                materialname = 'Прозрачная глянец'
+                break;
+            case 'Прозора матова плівка' || 'Прозрачная матовая пленка':
+                materialname = 'Прозрачная мат'
+                break;
+            case 'Перфорована плівка' || 'Перфорированная пленка':
+                materialname = 'Перфа'
+                break;
+            case 'Самоклеюча плівка з чорним клейовим шаром' || 'Самоклеющаяся пленка с черным клеевым слоем':
+                materialname = 'Блокпленка'
+                break;
+            case 'Кольорова плівка серії Oracal 641' || 'Цветная пленка серии Oracal 641':
+                materialname = ''
+                break;
+            case 'Папір сіті 150 гр.' || 'Бумага сити 150 гр.':
+                materialname = 'Сити'
+                break;
+            case 'Папір блюбек 115 гр.' || 'Бумага блюбэк 115 гр.':
+                materialname = 'Блюбек'
+                break;
+            case 'Давальницький матеріал' || 'Давальческий материал':
+                materialname = 'Давальческий'
+                break;
+            case 'Холст':
+                materialname = 'Холст'
+                break;
+            case 'Світлопропускний пластик' || 'Светопропускной пластик':
+                materialname = 'Пластик'
+                break;
+          }
+
         const data = await TableModel.create({
             id,
             file: `/uploadsFile/${req.file.originalname}`,
-            fileName: `${id}_${user.name}_${material}_${quality}_${width}_${height}_${count}${newConditions?.lamination?.name && '_' + newConditions.lamination.name}
+            fileName: `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}X${height}mm_${count}шт${newConditions?.lamination?.name && '_' + newConditions.lamination.name}
             ${newConditions?.cutting?.name && '_' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_' + newConditions.eyelets.name} 
             ${newConditions?.mounting?.name && '_' + newConditions.mounting.name}${newConditions?.poster?.name && '_' + newConditions.poster.name}
             ${newConditions?.solderGates?.name && '_' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_' + newConditions.solderPockets.name}
@@ -57,28 +109,25 @@ export const createTable = async (req, res) => {
     }
 }
 
-export const downloadFile = async (req,res) => {
-    try {
+export const downloadFile = async (req, res) => {
+  try {
     const id = req.query.id;
     const table = await TableModel.findById(id);
+    console.log("Work ");
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+    const filePath = path.join(__dirname, "..", table.file); // Отримайте шлях до файлу
 
-      const __filename = fileURLToPath(import.meta.url);
-      const __dirname = dirname(__filename);
-      const filePath = path.join(__dirname, '..', table.file); // Отримайте шлях до файлу
-      console.log('filePath',filePath);
-      console.log('__filename',__filename);
-      console.log('table.file',table.file);
-
-      if(filePath) {
-        return res.download(filePath)
-        // return res.attachment(table.file).sendFile(filePath);
-      }
-      return res.status(400).json({message: 'Dowload error'})
-    } catch(e) {
-        console.log(e);
-        res.status(500).json({message: 'Upload error'})
+    if (filePath) {
+      return res.download(filePath);
+      // return res.attachment(table.file).sendFile(filePath);
     }
-}
+    return res.status(400).json({ message: "Dowload error" });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Upload error" });
+  }
+};
 
 export const updateStatus = async (req, res) => {
   try {

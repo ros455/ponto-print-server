@@ -10,6 +10,7 @@ const CalculatorSchema = new mongoose.Schema({
             mounting: Number,
             stamp: Number,
             stretchOnTheStretcher: Number,
+            stretchOnTheStretcherMin: Number,
             quality: [{
                 nameUa: String,
                 nameRu: String,
