@@ -77,11 +77,11 @@ export const createTable = async (req, res) => {
         const data = await TableModel.create({
             id,
             file: `/uploadsFile/${req.file.originalname}`,
-            fileName: `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}X${height}mm_${count}шт${newConditions?.lamination?.name && '_' + newConditions.lamination.name}
-            ${newConditions?.cutting?.name && '_' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_' + newConditions.eyelets.name} 
-            ${newConditions?.mounting?.name && '_' + newConditions.mounting.name}${newConditions?.poster?.name && '_' + newConditions.poster.name}
-            ${newConditions?.solderGates?.name && '_' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_' + newConditions.solderPockets.name}
-            ${newConditions?.stamp?.name && '_' + newConditions.stamp.name}${newConditions?.stretch?.name && '_' + newConditions.stretch.name}`,
+            fileName: `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}x${height}mm_${count}шт${newConditions?.lamination?.name && '_Ламінація: ' + newConditions.lamination.name}
+            ${newConditions?.cutting?.name && '_Порізка: ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверси: ' + newConditions.eyelets.name} 
+            ${newConditions?.mounting?.name && '_Монтування: ' + newConditions.mounting.name}${newConditions?.poster?.name && '_Постер: ' + newConditions.poster.name}
+            ${newConditions?.solderGates?.name && '_Пропайка підворотів: ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_Пропайка карманів: ' + newConditions.solderPockets.name}
+            ${newConditions?.stamp?.name && '_Штамп: ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка на підрамник: ' + newConditions.stretch.name}`,
             material,
             quality,
             width,
