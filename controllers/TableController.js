@@ -74,14 +74,17 @@ export const createTable = async (req, res) => {
                 break;
           }
 
+        const newFileName = `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}x${height}mm_${count}шт${newConditions?.lamination?.name && '_Ламінація: ' + newConditions.lamination.name}
+        ${newConditions?.cutting?.name && '_Порізка: ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверси: ' + newConditions.eyelets.name} 
+        ${newConditions?.mounting?.name && '_Монтування: ' + newConditions.mounting.name}${newConditions?.poster?.name && '_Постер: ' + newConditions.poster.name}
+        ${newConditions?.solderGates?.name && '_Пропайка підворотів: ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_Пропайка карманів: ' + newConditions.solderPockets.name}
+        ${newConditions?.stamp?.name && '_Штамп: ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка на підрамник: ' + newConditions.stretch.name}`.trim()
+        const fileExtension = req.file.originalname.split('.').pop();
+
         const data = await TableModel.create({
             id,
-            file: `/uploadsFile/${req.file.originalname}`,
-            fileName: `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}x${height}mm_${count}шт${newConditions?.lamination?.name && '_Ламінація: ' + newConditions.lamination.name}
-            ${newConditions?.cutting?.name && '_Порізка: ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверси: ' + newConditions.eyelets.name} 
-            ${newConditions?.mounting?.name && '_Монтування: ' + newConditions.mounting.name}${newConditions?.poster?.name && '_Постер: ' + newConditions.poster.name}
-            ${newConditions?.solderGates?.name && '_Пропайка підворотів: ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_Пропайка карманів: ' + newConditions.solderPockets.name}
-            ${newConditions?.stamp?.name && '_Штамп: ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка на підрамник: ' + newConditions.stretch.name}`,
+            file: `/uploadsFile/${newFileName}.${fileExtension}`,
+            fileName: newFileName,
             material,
             quality,
             width,
@@ -99,6 +102,14 @@ export const createTable = async (req, res) => {
 
       user.orders.push(data._id); // Додайте ідентифікатор замовлення до масиву `orders`
       await user.save(); // Збережіть оновлену модель користувача
+      const invalidCharacters = /[<>:"\\/|?*.]/g;
+      const cleanedStr = newFileName.replace(/\s/g, "").replace(invalidCharacters, "");
+      console.log(cleanedStr + '.' + fileExtension);
+      
+      fs.rename(`./uploadsFile/${req.file.originalname}`, `./uploadsFile/${cleanedStr}.${fileExtension}`, (err) => {
+        if (err) throw err; // не удалось переименовать файл
+        console.log("Файл успешно переименован");
+      });
 
         res.json(data);
     } catch (e) {
