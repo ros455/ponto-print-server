@@ -73,9 +73,9 @@ setInterval(() => {
   TableController.checkedLongTimeFile();
 }, 86400000);
 
-// setTimeout(() => {
-//   CurrenyController.createDefaultCurrency();
-// },1000)
+setTimeout(() => {
+  CurrenyController.createDefaultCurrency();
+},1000)
 
 const runFunc = async () => {
   try {
