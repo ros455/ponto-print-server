@@ -81,9 +81,15 @@ export const createTable = async (req, res) => {
         ${newConditions?.stamp?.name && '_Штамп: ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка на підрамник: ' + newConditions.stretch.name}`.trim()
         const fileExtension = req.file.originalname.split('.').pop();
 
+        const invalidCharacters = /[<>:"\\/|?*.]/g;
+        const cleanedStr = newFileName.replace(/\s/g, "").replace(invalidCharacters, "");
+        
+        // Склеювання тексту без пробілів
+        const gluedStr = cleanedStr.split(" ").join("");
+
         const data = await TableModel.create({
             id,
-            file: `/uploadsFile/${newFileName}.${fileExtension}`,
+            file: `/uploadsFile/${gluedStr}.${fileExtension}`,
             fileName: newFileName,
             material,
             quality,
@@ -102,9 +108,11 @@ export const createTable = async (req, res) => {
 
       user.orders.push(data._id); // Додайте ідентифікатор замовлення до масиву `orders`
       await user.save(); // Збережіть оновлену модель користувача
-      const invalidCharacters = /[<>:"\\/|?*.]/g;
-      const cleanedStr = newFileName.replace(/\s/g, "").replace(invalidCharacters, "");
-      console.log(cleanedStr + '.' + fileExtension);
+    //   const invalidCharacters = /[<>:"\\/|?*.]/g;
+    //   const cleanedStr = newFileName.replace(/\s/g, "").replace(invalidCharacters, "");
+    //   console.log(cleanedStr + '.' + fileExtension);
+
+console.log('gluedStr',gluedStr);
       
       fs.rename(`./uploadsFile/${req.file.originalname}`, `./uploadsFile/${cleanedStr}.${fileExtension}`, (err) => {
         if (err) throw err; // не удалось переименовать файл
