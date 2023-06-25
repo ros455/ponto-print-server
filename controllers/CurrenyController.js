@@ -12,7 +12,7 @@ export const getCurrency = async (req,res) => {
 
 export const createDefaultCurrency = async (req, res) => {
     try {
-      const valueResponse = await fetch('https://server-ponto-print.herokuapp.com/get-currency');
+      const valueResponse = await fetch('http://server.ponto-print.com.ua:4444/get-currency');
       const valueData = await valueResponse.json();
       const value = valueData[0]?.value;
   
@@ -42,7 +42,7 @@ export const createDefaultCurrency = async (req, res) => {
 
         const currencyId = '646faf6bd812a1a42ea8129d';
 
-        const response = await fetch('https://server-ponto-print.herokuapp.com/get-currency')
+        const response = await fetch('http://server.ponto-print.com.ua:4444/get-currency')
         .then((res) => res.json())
         .then((res) => res[0]?.banckCurrency)
 
