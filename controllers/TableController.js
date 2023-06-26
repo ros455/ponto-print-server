@@ -12,7 +12,7 @@ export const createTable = async (req, res) => {
 
         const newStatus = JSON.parse(status);
         const newConditions = JSON.parse(conditions);
-        console.log('newStatus',newStatus);
+        console.log('newConditions',newConditions);
 
         // const userId = req.user._id;
         const user = await UserModel.findById(userId);
@@ -74,11 +74,11 @@ export const createTable = async (req, res) => {
                 break;
           }
 
-        const newFileName = `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}x${height}mm_${count}шт${newConditions?.lamination?.name && '_Ламінація: ' + newConditions.lamination.name}
-        ${newConditions?.cutting?.name && '_Порізка: ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверси: ' + newConditions.eyelets.name} 
-        ${newConditions?.mounting?.name && '_Монтування: ' + newConditions.mounting.name}${newConditions?.poster?.name && '_Постер: ' + newConditions.poster.name}
-        ${newConditions?.solderGates?.name && '_Пропайка підворотів: ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_Пропайка карманів: ' + newConditions.solderPockets.name}
-        ${newConditions?.stamp?.name && '_Штамп: ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка на підрамник: ' + newConditions.stretch.name}`.trim()
+        const newFileName = `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}x${height}mm_${count}шт${newConditions?.lamination?.name && '_Ламинация_ ' + newConditions.lamination.name}
+        ${newConditions?.cutting?.name && '_Порезка_ ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверсы_ ' + newConditions.eyelets.name} 
+        ${newConditions?.mounting?.name && '_Монтирование_ ' + newConditions.mounting.name}${newConditions?.poster?.name && '_Постер_ ' + newConditions.poster.name}
+        ${newConditions?.solderGates?.name && '_Пропайка-подворотов_ ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_Пропайка-карманов_ ' + newConditions.solderPockets.name}
+        ${newConditions?.stamp?.name && '_Штамп_ ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка-на-подрамник_ ' + newConditions.stretch.name}${newConditions?.bilateral?.name && '_Двусторонний '}`.trim()
         const fileExtension = req.file.originalname.split('.').pop();
 
         const invalidCharacters = /[<>:"\\/|?*.]/g;
