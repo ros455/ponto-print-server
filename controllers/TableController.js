@@ -14,7 +14,6 @@ export const createTable = async (req, res) => {
         const newConditions = JSON.parse(conditions);
         console.log('newConditions',newConditions);
 
-        // const userId = req.user._id;
         const user = await UserModel.findById(userId);
 
         const lastTable = await TableModel.findOne({}, {}, { sort: { id: -1 } });
@@ -108,11 +107,6 @@ export const createTable = async (req, res) => {
 
       user.orders.push(data._id); // Додайте ідентифікатор замовлення до масиву `orders`
       await user.save(); // Збережіть оновлену модель користувача
-    //   const invalidCharacters = /[<>:"\\/|?*.]/g;
-    //   const cleanedStr = newFileName.replace(/\s/g, "").replace(invalidCharacters, "");
-    //   console.log(cleanedStr + '.' + fileExtension);
-
-console.log('gluedStr',gluedStr);
       
       fs.rename(`./uploadsFile/${req.file.originalname}`, `./uploadsFile/${cleanedStr}.${fileExtension}`, (err) => {
         if (err) throw err; // не удалось переименовать файл
@@ -139,7 +133,6 @@ export const downloadFile = async (req, res) => {
 
     if (filePath) {
       return res.download(filePath);
-      // return res.attachment(table.file).sendFile(filePath);
     }
     return res.status(400).json({ message: "Dowload error" });
   } catch (e) {
