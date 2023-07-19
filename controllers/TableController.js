@@ -4,7 +4,6 @@ import moment from 'moment';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
-import Table from '../models/Table.js';
 
 export const createTable = async (req, res) => {
     try {
@@ -102,10 +101,15 @@ export const createTable = async (req, res) => {
         // Склеювання тексту без пробілів
         const gluedStr = cleanedStr.split(" ").join("");
 
+        const originalFilename = Buffer.from(req.file.originalname, 'binary').toString('utf8');
+
+        console.log('originalFilename',originalFilename);
+
         const data = await TableModel.create({
             id,
             file: `/uploadsFile/${gluedStr}.${fileExtension}`,
             fileName: newFileName,
+            origibalFileName: originalFilename,
             material,
             quality,
             width,
@@ -144,8 +148,13 @@ export const downloadFile = async (req, res) => {
     const table = await TableModel.findById(id);
     console.log("Work ");
     const __filename = fileURLToPath(import.meta.url);
+    console.log('__filename',__filename);
     const __dirname = dirname(__filename);
+    console.log('__dirname',__dirname);
+
     const filePath = path.join(__dirname, "..", table.file); // Отримайте шлях до файлу
+
+    console.log('filePath',filePath);
 
     if (filePath) {
       return res.download(filePath);
@@ -232,7 +241,7 @@ export const updateUserStatus = async (req, res) => {
     try {
         const currentDate = new Date(); // Поточна дата
 
-        const tables = await Table.find().select('createdAt file');
+        const tables = await TableModel.find().select('createdAt file');
         tables.filter((el) => {
             const createdAt = el.createdAt; // Дата створення з MongoDB
             const file = el.file;
@@ -252,3 +261,48 @@ export const updateUserStatus = async (req, res) => {
         console.log('Error', e);
     }
 }
+
+export const updateTableSum = async (req, res) => {
+    try {
+        const { tableId, newValue} = req.body;
+        console.log('tableId',tableId);
+        console.log('newValue',newValue);
+
+        const data = await TableModel.updateOne(
+            {_id: tableId},
+            {
+                sum: newValue,
+            }
+        )
+    
+        res.json(data);
+
+    } catch (e) {
+        console.log(e);
+        res.status(500).json({
+            message: "Error updating sum"
+        });
+    }
+  }
+
+
+  export const downloadProgram = async (req, res) => {
+    try {
+      const localPathFile = '/download-program/TiffInfo.rar';
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = dirname(__filename);
+      console.log('__dirname',__dirname);
+  
+      const filePath = path.join(__dirname, "..", localPathFile); // Отримайте шлях до файлу
+  
+      console.log('filePath',filePath);
+  
+      if (filePath) {
+        return res.download(filePath);
+      }
+      return res.status(400).json({ message: "Dowload error" });
+    } catch (e) {
+      console.log(e);
+      res.status(500).json({ message: "Upload error" });
+    }
+  };

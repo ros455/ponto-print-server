@@ -25,6 +25,8 @@ router.post('/create-table',uploadFile.single('file'),TableController.createTabl
 router.get('/get-all-table',TableController.getAllTables);
 router.patch('/update-status',TableController.updateStatus);
 router.patch('/update-user-table-status',TableController.updateUserStatus);
+router.patch('/update-table-sum',TableController.updateTableSum);
 router.get('/download',TableController.downloadFile);
+router.get('/download-program',TableController.downloadProgram);
 
 export default router;

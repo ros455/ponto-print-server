@@ -17,6 +17,7 @@ export const register = async (req, res) => {
         const user = await UserModel.create({
             email,
             name,
+            address: '',
             isAdmin: false,
             balance: 0,
             discount: false,
@@ -45,7 +46,7 @@ export const register = async (req, res) => {
             from: 'ponto-print@ukr.net', // електронна адреса, з якої відправляється лист
             to: email, // електронна адреса отримувача
             subject: 'Рєстрація пройшла успішно', // тема листа
-            text: `Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password}` // текст листа
+            text: `Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password} Наша адресса: http://ponto-print.com.ua` // текст листа
           };
 
           if(validator.isEmail(email)) {
@@ -276,3 +277,26 @@ export const updatePassword = async (req, res) => {
     res.status(500).json({ message: 'Не вдалося змінити пароль користувача' });
   }
 };
+
+export const updateUserAddress = async (req, res) => {
+  try {
+      const { userId, newValue} = req.body;
+      console.log('userId',userId);
+      console.log('newValue',newValue);
+
+      const data = await UserModel.updateOne(
+          {_id: userId},
+          {
+              address: newValue,
+          }
+      )
+  
+      res.json(data);
+
+  } catch (e) {
+      console.log(e);
+      res.status(500).json({
+          message: "Error updating address"
+      });
+  }
+}
