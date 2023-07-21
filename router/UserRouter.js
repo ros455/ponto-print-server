@@ -12,7 +12,8 @@ router.patch('/update-discount',UsersController.updateDiscount);
 router.patch('/update-name',UsersController.updateName);
 router.patch('/update-password',UsersController.updatePassword);
 router.patch('/update-user-status',UsersController.updateDisabledStatus);
-router.patch('/update-user-address',UsersController.updateUserAddress);
+router.patch('/add-user-address',UsersController.addAddressToUser);
+router.patch('/remove-user-address',UsersController.removeAddressFromUser);
 router.get('/get-all-user',UsersController.getAll);
 router.get('/get-me',checkAuth,UsersController.getMe)
 

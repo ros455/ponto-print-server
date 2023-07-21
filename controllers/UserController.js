@@ -278,25 +278,76 @@ export const updatePassword = async (req, res) => {
   }
 };
 
-export const updateUserAddress = async (req, res) => {
-  try {
-      const { userId, newValue} = req.body;
-      console.log('userId',userId);
-      console.log('newValue',newValue);
+// export const updateUserAddress = async (req, res) => {
+//   try {
+//       const { userId, newValue} = req.body;
+//       console.log('userId',userId);
+//       console.log('newValue',newValue);
 
-      const data = await UserModel.updateOne(
-          {_id: userId},
-          {
-              address: newValue,
-          }
-      )
+//       const data = await UserModel.updateOne(
+//           {_id: userId},
+//           {
+//               address: newValue,
+//           }
+//       )
   
-      res.json(data);
+//       res.json(data);
 
-  } catch (e) {
-      console.log(e);
-      res.status(500).json({
-          message: "Error updating address"
-      });
+//   } catch (e) {
+//       console.log(e);
+//       res.status(500).json({
+//           message: "Error updating address"
+//       });
+//   }
+// }
+
+
+export const addAddressToUser = async (req,res) => {
+  try {
+    const { userId, newValue} = req.body;
+    // Знайдіть користувача за його ідентифікатором (userId)
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      throw new Error("Користувача не знайдено");
+    }
+
+    // Додайте нову адресу до масиву address
+    user.address.push(newValue);
+
+    // Збережіть зміни
+    await user.save();
+
+    return user;
+  } catch (error) {
+    throw new Error("Помилка при додаванні адреси до користувача: " + error.message);
   }
 }
+
+export const removeAddressFromUser = async (req, res) => {
+  try {
+    const { userId, addressIndex } = req.body;
+    // Знайдіть користувача за його ідентифікатором (userId)
+    const user = await UserModel.findById(userId);
+
+    if (!user) {
+      throw new Error("Користувача не знайдено");
+    }
+
+    // Знайдіть індекс адреси, яку потрібно видалити
+
+    if (addressIndex === -1) {
+      throw new Error("Адресу не знайдено");
+    }
+
+    // Видаліть адресу з масиву address за індексом addressIndex
+    user.address.splice(addressIndex, 1);
+
+    // Збережіть зміни
+    await user.save();
+
+    return user;
+  } catch (error) {
+    throw new Error("Помилка при видаленні адреси з користувача: " + error.message);
+  }
+};

@@ -28,5 +28,6 @@ router.patch('/update-user-table-status',TableController.updateUserStatus);
 router.patch('/update-table-sum',TableController.updateTableSum);
 router.get('/download',TableController.downloadFile);
 router.get('/download-program',TableController.downloadProgram);
+router.get('/delete-all-tables',TableController.deleteCollection);
 
 export default router;

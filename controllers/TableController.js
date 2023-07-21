@@ -21,6 +21,9 @@ export const createTable = async (req, res) => {
         const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
 
         let materialname = '';
+
+        console.log('address',address);
+        console.log('notes',notes);
         
         switch(material) {
             case 'Банер 440 гр. Ламінований':
@@ -304,5 +307,15 @@ export const updateTableSum = async (req, res) => {
     } catch (e) {
       console.log(e);
       res.status(500).json({ message: "Upload error" });
+    }
+  };
+
+  export const deleteCollection = async (req, res) => {
+    try {
+      await TableModel.deleteMany({}); // Видалити всі документи у колекції
+      res.json({ message: 'Колекцію успішно видалено' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Помилка при видаленні колекції' });
     }
   };
