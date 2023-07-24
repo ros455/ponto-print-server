@@ -112,7 +112,7 @@ export const createTable = async (req, res) => {
             id,
             file: `/uploadsFile/${gluedStr}.${fileExtension}`,
             fileName: newFileName,
-            origibalFileName: originalFilename,
+            originalFileName: originalFilename,
             material,
             quality,
             width,

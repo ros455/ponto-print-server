@@ -8,7 +8,7 @@ const TableSchema = new mongoose.Schema(
       unique: true,
     },
     file: String,
-    origibalFileName: String,
+    originalFileName: String,
     fileName: String,
     material: String,
     quality: String,

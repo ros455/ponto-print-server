@@ -17,7 +17,7 @@ export const register = async (req, res) => {
         const user = await UserModel.create({
             email,
             name,
-            address: '',
+            address: [],
             isAdmin: false,
             balance: 0,
             discount: false,
@@ -46,7 +46,14 @@ export const register = async (req, res) => {
             from: 'ponto-print@ukr.net', // електронна адреса, з якої відправляється лист
             to: email, // електронна адреса отримувача
             subject: 'Рєстрація пройшла успішно', // тема листа
-            text: `Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password} Наша адресса: http://ponto-print.com.ua` // текст листа
+            text: `Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password}`,
+            html: 
+            `
+            <duv>
+            <h3>Наша адресса:</h3>
+            <a href='http://ponto-print.com.ua'>http://ponto-print.com.ua</a>
+            </duv>
+            `
           };
 
           if(validator.isEmail(email)) {
