@@ -311,6 +311,7 @@ export const updateTableSum = async (req, res) => {
   };
 
   export const deleteCollection = async (req, res) => {
+    console.log('work');
     try {
       await TableModel.deleteMany({}); // Видалити всі документи у колекції
       res.json({ message: 'Колекцію успішно видалено' });
