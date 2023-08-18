@@ -67,7 +67,8 @@ setInterval(() => {
   if (currentTime >= startTime && currentTime <= endTime) {
     CurrenyController.createDefaultCurrency();
   }
-}, 1800000);
+}, 900000);
+
 
 setInterval(() => {
   TableController.checkedLongTimeFile();
