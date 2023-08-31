@@ -180,7 +180,7 @@ export const updateStatus = async (req, res) => {
               message: 'Table not found'
           });
       }
-      table.descriptionDelete = descriptionDelete;
+      table.descriptionDelete = descriptionDelete ? descriptionDelete : '';
       table.status.currentStatus = value;
       table.status.name = name;
       table.status.paid = paid;

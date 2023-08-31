@@ -62,6 +62,8 @@ app.get('/get-currency', CurrenyController.getCurrency);
 app.patch('/create-default-currency', CurrenyController.createDefaultCurrency);
 app.patch('/update-currency', CurrenyController.createAdminCurrency);
 
+app.get('/update-bank-value',CurrenyController.updateBanckCurrency)
+
 setInterval(() => {
   const currentTime = Date.now();
   if (currentTime >= startTime && currentTime <= endTime) {

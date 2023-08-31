@@ -36,6 +36,24 @@ export const createDefaultCurrency = async (req, res) => {
     }
   };
 
+  export const updateBanckCurrency = async () => {
+    const currencyId = '646faf6bd812a1a42ea8129d';
+
+    const response = await fetch('http://91.206.30.132:4444/get-currency')
+        .then((res) => res.json())
+        .then((res) => res[0]?.banckCurrency)
+
+
+    const currencie = await CurrencyModel.findById(currencyId);
+    console.log('response.toFixed(2)',response.toFixed(2));
+
+    currencie.banckCurrency = response.toFixed(2);
+
+    await currencie.save();
+
+    res.json(currencie);
+  }
+
   export const createAdminCurrency = async (req, res) => {
     try{
         const {value} = req.body;
@@ -60,8 +78,4 @@ export const createDefaultCurrency = async (req, res) => {
     } catch(e) {
         console.log(e);
     }
-  }
-
-  export const sayHello = () => {
-    console.log('hello World');
   }
