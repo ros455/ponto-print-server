@@ -42,17 +42,30 @@ export const register = async (req, res) => {
             }
           });
 
+          // let mailOptions = {
+          //   from: 'ponto-print@ukr.net', // електронна адреса, з якої відправляється лист
+          //   to: email, // електронна адреса отримувача
+          //   subject: 'Рєстрація пройшла успішно', // тема листа
+          //   text: `Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password}`,
+          //   html: 
+          //   `
+          //   <div>
+          //   <h3>Наша адресса:</h3>
+          //   <a href='http://ponto-print.com.ua'>http://ponto-print.com.ua</a>
+          //   </div>
+          //   `
+          // };
           let mailOptions = {
             from: 'ponto-print@ukr.net', // електронна адреса, з якої відправляється лист
             to: email, // електронна адреса отримувача
             subject: 'Рєстрація пройшла успішно', // тема листа
-            text: `Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password}`,
             html: 
             `
-            <duv>
+            <div>
             <h3>Наша адресса:</h3>
+            <p>Ласкаво просимо до ponto-print. Ваш логін: ${name}; Ваш пароль: ${password}</p>
             <a href='http://ponto-print.com.ua'>http://ponto-print.com.ua</a>
-            </duv>
+            </div>
             `
           };
 
