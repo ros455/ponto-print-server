@@ -15,6 +15,7 @@ router.patch('/update-user-status',UsersController.updateDisabledStatus);
 router.patch('/add-user-address',UsersController.addAddressToUser);
 router.patch('/remove-user-address',UsersController.removeAddressFromUser);
 router.get('/get-all-user',UsersController.getAll);
+router.get('/get-all-user-pagination',UsersController.getAllPagination);
 router.get('/get-me',checkAuth,UsersController.getMe)
 
 export default router;

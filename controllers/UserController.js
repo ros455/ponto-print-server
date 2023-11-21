@@ -246,9 +246,37 @@ export const removeUser = async (req, res) => {
 export const getAll = async (req, res) => {
   try {
     const allData = await UserModel.find().populate('orders');
+    console.log('allData',allData);
     res.json(allData);
   } catch (error) {
     console.log(error);
+  }
+}
+
+export const getAllPagination = async (req, res) => {
+  try {
+    const { page, limit } = req.query;
+    const skip = parseInt(page - 1) * parseInt(limit); // Переконайтеся, що ці значення є числами
+
+    const query = {
+      isAdmin: { $ne: true }
+    };
+
+    // Використання агрегаційного пайплайну для сортування без урахування регістру
+    let allData = await UserModel.aggregate([
+      { $match: query },
+      { $addFields: { nameLower: { $toLower: "$name" } } },
+      { $sort: { nameLower: 1 } },
+      { $skip: skip },
+      { $limit: parseInt(limit) },
+      { $lookup: { from: 'orders', localField: 'orders', foreignField: '_id', as: 'orders' } }
+    ]);
+
+    // Відправка відсортованих даних
+    res.json(allData);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Помилка сервера' });
   }
 }
 

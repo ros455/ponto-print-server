@@ -11,7 +11,6 @@ export const createTable = async (req, res) => {
 
         const newStatus = JSON.parse(status);
         const newConditions = JSON.parse(conditions);
-        console.log('newConditions',newConditions);
 
         const user = await UserModel.findById(userId);
 
@@ -21,9 +20,6 @@ export const createTable = async (req, res) => {
         const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
 
         let materialname = '';
-
-        console.log('address',address);
-        console.log('notes',notes);
         
         switch(material) {
             case 'Банер 440 гр. Ламінований':
@@ -106,8 +102,6 @@ export const createTable = async (req, res) => {
 
         const originalFilename = Buffer.from(req.file.originalname, 'binary').toString('utf8');
 
-        console.log('originalFilename',originalFilename);
-
         const data = await TableModel.create({
             id,
             file: `/uploadsFile/${gluedStr}.${fileExtension}`,
@@ -149,11 +143,11 @@ export const downloadFile = async (req, res) => {
   try {
     const id = req.query.id;
     const table = await TableModel.findById(id);
-    console.log("Work ");
+
     const __filename = fileURLToPath(import.meta.url);
-    console.log('__filename',__filename);
+
     const __dirname = dirname(__filename);
-    console.log('__dirname',__dirname);
+
 
     const filePath = path.join(__dirname, "..", table.file); // Отримайте шлях до файлу
 
@@ -172,7 +166,7 @@ export const downloadFile = async (req, res) => {
 export const updateStatus = async (req, res) => {
   try {
       const { tableId, value, name, paid, descriptionDelete } = req.body;
-      console.log('descriptionDelete',descriptionDelete);
+      console.log('update table status');
 
       const table = await TableModel.findById(tableId);
       if (!table) {
@@ -199,12 +193,8 @@ export const updateUserStatus = async (req, res) => {
   try {
       const { tableId, value, name, } = req.body;
 
-      console.log('tableId',tableId);
-      console.log('value',value);
-      console.log('name',name);
-
       const table = await TableModel.findById(tableId);
-      console.log('table.status.currentStatus',table.status.currentStatus);
+
       if (!table) {
           return res.status(404).json({
               message: 'Table not found'
@@ -231,14 +221,24 @@ export const updateUserStatus = async (req, res) => {
 }
 
   export const getAllTables = async (req, res) => {
-    try{
-    const tables = await TableModel.find().populate('user');
-    
-        res.json(tables)
-      } catch(e) {
-        console.log(e);
+    try {
+      const { page, limit } = req.query;
+      const skip = (page - 1) * limit;
+      const tables = await TableModel.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate("user");
+
+      if (tables.length) {
+        console.log("tables work");
       }
-  }
+
+      res.json(tables);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   export const checkedLongTimeFile = async (req, res) => {
     try {
@@ -320,3 +320,80 @@ export const updateTableSum = async (req, res) => {
       res.status(500).json({ error: 'Помилка при видаленні колекції' });
     }
   };
+
+  export const sortByUserName = async (req, res) => {
+    try {
+        const {name} = req.query;
+
+        const user = await UserModel.findOne({name});
+        if(!user) {
+            res.status(404).json({ error: 'Користувача не знайдено' });
+            return;
+        }
+        const userId = user._id;
+
+        const tables = await TableModel.find({user: userId});
+
+        if(!tables) {
+            res.status(404).json({ error: 'Таблиць не знайдено' });
+        }
+
+        res.json(tables);
+    } catch(error) {
+        console.log(error);
+        res.status(404).json({ error: 'Користувача не знайдено' });
+    }
+  }
+
+  export const sortByStatus = async (req, res) => {
+    try {
+        const {status} = req.query;
+
+        const tables = await TableModel.find({"status.name": status});
+
+        if(!tables) {
+            res.status(404).json({ error: 'Таблиць не знайдено' });
+        }
+
+        res.json(tables);
+    } catch(error) {
+        console.log(error);
+        res.status(404).json({ error: 'Користувача не знайдено' });
+    }
+  }
+
+
+export const sortByDate = async (req, res) => {
+    try {
+        const { date } = req.query; // Наприклад, "2023-11-18"
+
+        console.log('date', date);
+
+        const tables = await TableModel.aggregate([
+            {
+                $addFields: {
+                    // Форматування дати у рядок
+                    formattedDate: {
+                        $dateToString: { format: "%Y-%m-%d", date: { $dateFromString: { dateString: "$date" } } }
+                    }
+                }
+            },
+            {
+                $match: {
+                    formattedDate: date
+                }
+            }
+        ]);
+
+        console.log('tables', tables);
+
+        if (tables.length === 0) {
+            return res.status(404).json({ error: 'Таблиць не знайдено' });
+        }
+
+        res.json(tables);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Помилка сервера' });
+    }
+};
