@@ -229,6 +229,24 @@ export const updateDisabledStatus = async (req, res) => {
     console.log(e);
 }
 }
+export const updateDisabledPaymantStatus = async (req, res) => {
+  try{
+    const {value, userId} = req.body;
+
+    console.log('WOrk');
+
+    const data = await UserModel.updateOne(
+        {_id: userId},
+        {
+          disabledPaymant: value,
+        }
+    )
+
+    res.json(data);
+} catch(e) {
+    console.log(e);
+}
+}
 
 export const removeUser = async (req, res) => {
     try {
@@ -253,7 +271,7 @@ export const getAll = async (req, res) => {
   }
 }
 
-export const getAllPagination = async (req, res) => {
+export const getAllUserPagination = async (req, res) => {
   try {
     const { page, limit } = req.query;
     const skip = parseInt(page - 1) * parseInt(limit); // Переконайтеся, що ці значення є числами
@@ -279,6 +297,44 @@ export const getAllPagination = async (req, res) => {
     res.status(500).json({ error: 'Помилка сервера' });
   }
 }
+
+// export const getAllUsersName = async (req, res) => {
+//   try {
+
+//     // Використання агрегаційного пайплайну для сортування без урахування регістру
+//     let allData = await UserModel.find().populate('user');
+
+//     // Відправка відсортованих даних
+//     res.json(allData);
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ error: 'Помилка сервера' });
+//   }
+// }
+
+export const getAllUsersName = async (req, res) => {
+  try {
+    // Використання агрегаційного пайплайну для отримання і сортування імен користувачів
+    const allUsers = await UserModel.aggregate([
+      { 
+        $addFields: { nameLower: { $toLower: "$name" } }  // Додає поле nameLower у нижньому регістрі
+      },
+      { 
+        $sort: { nameLower: 1 }  // Сортує за полем nameLower
+      },
+      {
+        $project: { name: 1, _id: 0 }  // Відображає тільки імена користувачів
+      },
+    ]);
+
+    // Відправка відсортованих даних
+    res.json(allUsers);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: 'Помилка сервера' });
+  }
+}
+
 
 export const getMe = async (req, res) => {
   try {

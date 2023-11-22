@@ -12,10 +12,12 @@ router.patch('/update-discount',UsersController.updateDiscount);
 router.patch('/update-name',UsersController.updateName);
 router.patch('/update-password',UsersController.updatePassword);
 router.patch('/update-user-status',UsersController.updateDisabledStatus);
+router.patch('/update-user-paymant-status',UsersController.updateDisabledPaymantStatus);
 router.patch('/add-user-address',UsersController.addAddressToUser);
 router.patch('/remove-user-address',UsersController.removeAddressFromUser);
 router.get('/get-all-user',UsersController.getAll);
-router.get('/get-all-user-pagination',UsersController.getAllPagination);
+router.get('/get-all-user-pagination',UsersController.getAllUserPagination);
+router.get('/get-all-users-name',UsersController.getAllUsersName);
 router.get('/get-me',checkAuth,UsersController.getMe)
 
 export default router;

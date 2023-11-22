@@ -16,6 +16,10 @@ const UserSchema = new mongoose.Schema({
         type:Boolean,
         default: false,
     },
+    disabledPaymant: {
+        type:Boolean,
+        default: false,
+    },
     loggedIn: {
         type:Boolean,
         default: true,

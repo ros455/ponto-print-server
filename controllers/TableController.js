@@ -332,7 +332,7 @@ export const updateTableSum = async (req, res) => {
         }
         const userId = user._id;
 
-        const tables = await TableModel.find({user: userId});
+        const tables = await TableModel.find({user: userId}).populate("user");
 
         if(!tables) {
             res.status(404).json({ error: 'Таблиць не знайдено' });
@@ -349,7 +349,7 @@ export const updateTableSum = async (req, res) => {
     try {
         const {status} = req.query;
 
-        const tables = await TableModel.find({"status.name": status});
+        const tables = await TableModel.find({"status.name": status}).populate("user");
 
         if(!tables) {
             res.status(404).json({ error: 'Таблиць не знайдено' });
@@ -363,9 +363,89 @@ export const updateTableSum = async (req, res) => {
   }
 
 
+// export const sortByDate = async (req, res) => {
+//     try {
+//         const { date } = req.query; // Наприклад, "2023-11-18"
+
+//         console.log('date', date);
+
+//         const tables = await TableModel.aggregate([
+//             {
+//                 $addFields: {
+//                     // Форматування дати у рядок
+//                     formattedDate: {
+//                         $dateToString: { format: "%Y-%m-%d", date: { $dateFromString: { dateString: "$date" } } }
+//                     }
+//                 }
+//             },
+//             {
+//                 $match: {
+//                     formattedDate: date
+//                 }
+//             },
+//         ]);
+
+//         console.log('tables', tables);
+
+//         if (tables.length === 0) {
+//             return res.status(404).json({ error: 'Таблиць не знайдено' });
+//         }
+
+//         res.json(tables);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ error: 'Помилка сервера' });
+//     }
+// };
+
+
+// export const sortByDate = async (req, res) => {
+//     try {
+//         const { date } = req.query; // Наприклад, "2023-11-18"
+
+//         console.log('date', date);
+
+//         const tables = await TableModel.aggregate([
+//             {
+//                 $addFields: {
+//                     // Форматування дати у рядок
+//                     formattedDate: {
+//                         $dateToString: { format: "%Y-%m-%d", date: { $dateFromString: { dateString: "$date" } } }
+//                     }
+//                 }
+//             },
+//             {
+//                 $match: {
+//                     formattedDate: date
+//                 }
+//             },
+//             {
+//                 $lookup: {
+//                     from: "users", // назва колекції користувачів (перевірте правильність)
+//                     localField: "user", // поле в таблиці, що відповідає _id користувача
+//                     foreignField: "_id", // поле _id в колекції користувачів
+//                     as: "user" // нове поле, де буде зберігатися інформація про користувача
+//                 }
+//             }
+//         ]);
+
+//         console.log('tables', tables);
+
+//         if (tables.length === 0) {
+//             return res.status(404).json({ error: 'Таблиць не знайдено' });
+//         }
+
+//         res.json(tables);
+//     } catch (error) {
+//         console.log(error);
+//         res.status(500).json({ error: 'Помилка сервера' });
+//     }
+// };
+
+
 export const sortByDate = async (req, res) => {
     try {
-        const { date } = req.query; // Наприклад, "2023-11-18"
+        const { date } = req.query;
 
         console.log('date', date);
 
@@ -381,6 +461,20 @@ export const sortByDate = async (req, res) => {
             {
                 $match: {
                     formattedDate: date
+                }
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "user",
+                    foreignField: "_id",
+                    as: "user"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$user",
+                    preserveNullAndEmptyArrays: true // Для випадків, коли у користувача немає запису
                 }
             }
         ]);
