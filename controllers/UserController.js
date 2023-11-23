@@ -1,9 +1,12 @@
 import UserModel from '../models/User.js';
-import moment from 'moment';
+// import moment from 'moment';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import validator from 'validator';
+import moment from "moment-timezone";
+const kyivTime = moment().tz("Europe/Kiev");
+const formattedDateTime = kyivTime.format("DD.MM.YYYY HH:mm:ss");
 
 const JWT_SECRET = 'secret';
 
@@ -140,7 +143,10 @@ export const login = async (req, res) => {
 
 export const updateBalance = async (req, res) => {
   try {
-      const { value, userId, action, historyValue } = req.body;
+      const { value, userId, action, historyValue, balance, debt } = req.body;
+
+      console.log('balance',balance);
+      console.log('debt',debt);
 
       const user = await UserModel.findById(userId);
 
@@ -148,12 +154,14 @@ export const updateBalance = async (req, res) => {
           return res.status(404).json({ error: 'Користувач не знайдений' });
       }
 
-      const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
+      // const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
 
       const newBalanceHistory = [...user.balanceHistory, {
           historyValue,
-          date,
-          action
+          date: formattedDateTime,
+          action,
+          balance,
+          debt
       }];
 
       const data = await UserModel.updateOne(
@@ -287,8 +295,10 @@ export const getAllUserPagination = async (req, res) => {
       { $sort: { nameLower: 1 } },
       { $skip: skip },
       { $limit: parseInt(limit) },
-      { $lookup: { from: 'orders', localField: 'orders', foreignField: '_id', as: 'orders' } }
+      { $lookup: { from: 'tables', localField: 'orders', foreignField: '_id', as: 'orders' } }
     ]);
+
+    console.log('allData',allData);
 
     // Відправка відсортованих даних
     res.json(allData);

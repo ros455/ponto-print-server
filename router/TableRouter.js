@@ -23,6 +23,7 @@ const router = new Router();
 // router.post('/create-table',checkAuth,uploadFile.single('file'),TableController.createTable);
 router.post('/create-table',uploadFile.single('file'),TableController.createTable);
 router.get('/get-all-table',TableController.getAllTables);
+router.get('/get-all-user-table',TableController.getTablesForUser);
 router.patch('/update-status',TableController.updateStatus);
 router.patch('/update-user-table-status',TableController.updateUserStatus);
 router.patch('/update-table-sum',TableController.updateTableSum);

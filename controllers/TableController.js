@@ -1,9 +1,12 @@
 import TableModel from '../models/Table.js';
 import UserModel from "../models/User.js";
-import moment from 'moment';
+// import moment from 'moment';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import moment from "moment-timezone";
+const kyivTime = moment().tz("Europe/Kiev");
+const formattedDateTime = kyivTime.format("DD.MM.YYYY HH:mm:ss");
 
 export const createTable = async (req, res) => {
     try {
@@ -17,7 +20,7 @@ export const createTable = async (req, res) => {
         const lastTable = await TableModel.findOne({}, {}, { sort: { id: -1 } });
         const id = (lastTable && lastTable.id) ? lastTable.id + 1 : 1;
 
-        const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
+        // const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
 
         let materialname = '';
         
@@ -115,7 +118,7 @@ export const createTable = async (req, res) => {
             sum,
             conditions: newConditions,
             status: newStatus,
-            date,
+            date: formattedDateTime,
             user,
             notes,
             address,
@@ -230,10 +233,6 @@ export const updateUserStatus = async (req, res) => {
         .limit(limit)
         .populate("user");
 
-      if (tables.length) {
-        console.log("tables work");
-      }
-
       res.json(tables);
     } catch (e) {
       console.log(e);
@@ -323,8 +322,8 @@ export const updateTableSum = async (req, res) => {
 
   export const sortByUserName = async (req, res) => {
     try {
-        const {name} = req.query;
-
+        const {name, page, limit} = req.query;
+        const skip = (page - 1) * limit;
         const user = await UserModel.findOne({name});
         if(!user) {
             res.status(404).json({ error: 'Користувача не знайдено' });
@@ -332,7 +331,11 @@ export const updateTableSum = async (req, res) => {
         }
         const userId = user._id;
 
-        const tables = await TableModel.find({user: userId}).populate("user");
+        const tables = await TableModel.find({user: userId})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate("user");
 
         if(!tables) {
             res.status(404).json({ error: 'Таблиць не знайдено' });
@@ -347,13 +350,19 @@ export const updateTableSum = async (req, res) => {
 
   export const sortByStatus = async (req, res) => {
     try {
-        const {status} = req.query;
-
-        const tables = await TableModel.find({"status.name": status}).populate("user");
+        const {status, page, limit} = req.query;
+        const skip = (page - 1) * limit;
+        const tables = await TableModel.find({"status.name": status})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate("user");
 
         if(!tables) {
             res.status(404).json({ error: 'Таблиць не знайдено' });
         }
+
+        console.log('tables',tables);
 
         res.json(tables);
     } catch(error) {
@@ -361,86 +370,6 @@ export const updateTableSum = async (req, res) => {
         res.status(404).json({ error: 'Користувача не знайдено' });
     }
   }
-
-
-// export const sortByDate = async (req, res) => {
-//     try {
-//         const { date } = req.query; // Наприклад, "2023-11-18"
-
-//         console.log('date', date);
-
-//         const tables = await TableModel.aggregate([
-//             {
-//                 $addFields: {
-//                     // Форматування дати у рядок
-//                     formattedDate: {
-//                         $dateToString: { format: "%Y-%m-%d", date: { $dateFromString: { dateString: "$date" } } }
-//                     }
-//                 }
-//             },
-//             {
-//                 $match: {
-//                     formattedDate: date
-//                 }
-//             },
-//         ]);
-
-//         console.log('tables', tables);
-
-//         if (tables.length === 0) {
-//             return res.status(404).json({ error: 'Таблиць не знайдено' });
-//         }
-
-//         res.json(tables);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: 'Помилка сервера' });
-//     }
-// };
-
-
-// export const sortByDate = async (req, res) => {
-//     try {
-//         const { date } = req.query; // Наприклад, "2023-11-18"
-
-//         console.log('date', date);
-
-//         const tables = await TableModel.aggregate([
-//             {
-//                 $addFields: {
-//                     // Форматування дати у рядок
-//                     formattedDate: {
-//                         $dateToString: { format: "%Y-%m-%d", date: { $dateFromString: { dateString: "$date" } } }
-//                     }
-//                 }
-//             },
-//             {
-//                 $match: {
-//                     formattedDate: date
-//                 }
-//             },
-//             {
-//                 $lookup: {
-//                     from: "users", // назва колекції користувачів (перевірте правильність)
-//                     localField: "user", // поле в таблиці, що відповідає _id користувача
-//                     foreignField: "_id", // поле _id в колекції користувачів
-//                     as: "user" // нове поле, де буде зберігатися інформація про користувача
-//                 }
-//             }
-//         ]);
-
-//         console.log('tables', tables);
-
-//         if (tables.length === 0) {
-//             return res.status(404).json({ error: 'Таблиць не знайдено' });
-//         }
-
-//         res.json(tables);
-//     } catch (error) {
-//         console.log(error);
-//         res.status(500).json({ error: 'Помилка сервера' });
-//     }
-// };
 
 
 export const sortByDate = async (req, res) => {
@@ -491,3 +420,29 @@ export const sortByDate = async (req, res) => {
         res.status(500).json({ error: 'Помилка сервера' });
     }
 };
+
+
+export const getTablesForUser = async (req, res) => {
+    try {
+        console.log('getTablesForUser');
+        const { page, limit, id } = req.query;
+        const skip = (page - 1) * limit;
+        const tables = await TableModel.find({user: id})
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+
+        if (!tables) {
+            return res.status(404).json({
+                message: 'Table not found'
+            });
+        }
+
+        console.log('tables',tables);
+
+        res.json(tables);
+  
+    } catch(error) {
+        console.log(error);
+    }
+}

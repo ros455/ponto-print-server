@@ -33,7 +33,9 @@ const UserSchema = new mongoose.Schema({
     balanceHistory: [{
         historyValue: String,
         date: String,
-        action: String
+        action: String,
+        balance: Number,
+        debt: Number
     }],
     discount: Boolean,
     discountValue: Number,
