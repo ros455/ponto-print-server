@@ -279,6 +279,16 @@ export const getAll = async (req, res) => {
   }
 }
 
+export const getAllOnlyUser = async (req, res) => {
+  try {
+    const allData = await UserModel.find();
+    console.log('allData',allData);
+    res.json(allData);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 export const getAllUserPagination = async (req, res) => {
   try {
     const { page, limit } = req.query;

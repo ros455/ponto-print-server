@@ -12,6 +12,7 @@ import UserRouter from './router/UserRouter.js';
 import CalculatorRouter from './router/CalculatorRouter.js';
 import TableRouter from './router/TableRouter.js';
 import Table from './models/Table.js';
+import { CronJob } from 'cron';
 
 import * as TranslationsUaController from './controllers/TranslationsUaController.js';
 import * as TranslationsRuController from './controllers/TranslationsRuController.js';
@@ -64,17 +65,25 @@ app.patch('/update-currency', CurrenyController.createAdminCurrency);
 
 app.get('/update-bank-value',CurrenyController.updateBanckCurrency)
 
-setInterval(() => {
-  const currentTime = Date.now();
-  if (currentTime >= startTime && currentTime <= endTime) {
-    CurrenyController.createDefaultCurrency();
-  }
-}, 900000);
+const jobEveryDay= new CronJob('00 07 * * *', () => {
+  CurrenyController.createDefaultCurrency();
+  }, null, true, 'Europe/Kiev');
+
+  const jobEveryMonthStage1 = new CronJob('00 00 01 * *', () => {
+    TableController.checkedLongTimeFile();
+  }, null, true, 'Europe/Kiev');
+
+// setInterval(() => {
+//   const currentTime = Date.now();
+//   if (currentTime >= startTime && currentTime <= endTime) {
+//     CurrenyController.createDefaultCurrency();
+//   }
+// }, 900000);
 
 
-setInterval(() => {
-  TableController.checkedLongTimeFile();
-}, 86400000);
+// setInterval(() => {
+//   TableController.checkedLongTimeFile();
+// }, 86400000);
 
 const runFunc = async () => {
   try {

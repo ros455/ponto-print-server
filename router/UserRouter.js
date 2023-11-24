@@ -16,6 +16,7 @@ router.patch('/update-user-paymant-status',UsersController.updateDisabledPaymant
 router.patch('/add-user-address',UsersController.addAddressToUser);
 router.patch('/remove-user-address',UsersController.removeAddressFromUser);
 router.get('/get-all-user',UsersController.getAll);
+router.get('/get-all-only-user',UsersController.getAllOnlyUser);
 router.get('/get-all-user-pagination',UsersController.getAllUserPagination);
 router.get('/get-all-users-name',UsersController.getAllUsersName);
 router.get('/get-me',checkAuth,UsersController.getMe)
