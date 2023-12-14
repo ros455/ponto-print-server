@@ -6,7 +6,6 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import moment from "moment-timezone";
 const kyivTime = moment().tz("Europe/Kiev");
-const formattedDateTime = kyivTime.format("DD.MM.YYYY HH:mm:ss");
 
 export const createTable = async (req, res) => {
     try {
@@ -104,6 +103,8 @@ export const createTable = async (req, res) => {
         const gluedStr = cleanedStr.split(" ").join("");
 
         const originalFilename = Buffer.from(req.file.originalname, 'binary').toString('utf8');
+
+        const formattedDateTime = kyivTime.format("DD.MM.YYYY HH:mm:ss");
 
         const data = await TableModel.create({
             id,
