@@ -19,10 +19,6 @@ import * as TranslationsRuController from './controllers/TranslationsRuControlle
 import * as CurrenyController from './controllers/CurrenyController.js';
 import * as TableController from './controllers/TableController.js';
 
-const kyivTime = moment().tz('Europe/Kiev');
-const startTime = moment(kyivTime).set({ hour: 7, minute: 0, second: 0 }).valueOf();
-const endTime = moment(kyivTime).set({ hour: 8, minute: 0, second: 0 }).valueOf();
-
 dotenv.config();
 const app = express();
 const db = 'mongodb+srv://roskichuk:qwerty12345@cluster0.vizv4yq.mongodb.net/?retryWrites=true&w=majority';

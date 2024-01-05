@@ -5,8 +5,6 @@ import bcrypt from 'bcrypt';
 import nodemailer from 'nodemailer';
 import validator from 'validator';
 import moment from "moment-timezone";
-const kyivTime = moment().tz("Europe/Kiev");
-
 
 const JWT_SECRET = 'secret';
 
@@ -154,8 +152,7 @@ export const updateBalance = async (req, res) => {
           return res.status(404).json({ error: 'Користувач не знайдений' });
       }
 
-      // const date = moment().utcOffset(3).format('YYYY-MM-DD HH:mm:ss');
-
+      const kyivTime = moment().tz("Europe/Kiev");
       const formattedDateTime = kyivTime.format("DD.MM.YYYY HH:mm:ss");
 
       const newBalanceHistory = [...user.balanceHistory, {
