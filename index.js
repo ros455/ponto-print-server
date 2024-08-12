@@ -61,11 +61,8 @@ app.patch('/update-currency', CurrenyController.createAdminCurrency);
 
 app.get('/update-bank-value',CurrenyController.updateBanckCurrency)
 
-const jobEveryDay= new CronJob('00 07 * * *', () => {
-  CurrenyController.createDefaultCurrency();
-  }, null, true, 'Europe/Kiev');
 
-  const jobEveryMonthStage1 = new CronJob('00 00 01 * *', () => {
+  const jobEveryDay = new CronJob('10 00 * * *', () => {
     TableController.checkedLongTimeFile();
   }, null, true, 'Europe/Kiev');
 

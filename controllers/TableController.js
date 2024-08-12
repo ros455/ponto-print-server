@@ -86,13 +86,26 @@ export const createTable = async (req, res) => {
             case 'Светопропускной пластик':
                 materialname = 'Пластик'
                 break;
+            case 'Самоклеючий папір':
+            case 'Самоклеящаяся бумага':
+                materialname = 'ЦИФРА_бумага'
+                break;
+            case 'Самоклеюча плівка':
+            case 'Самоклеящаяся пленка':
+                materialname = 'ЦИФРА_пленка'
+                break;
           }
 
+        // const newFileName = `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}x${height}mm_${count}шт${newConditions?.lamination?.name && '_Ламинация_ ' + newConditions.lamination.name}
+        // ${newConditions?.cutting?.name && '_Порезка_ ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверсы_ ' + newConditions.eyelets.name} 
+        // ${newConditions?.mounting?.name && '_Монтирование_ ' + newConditions.mounting.name}${newConditions?.poster?.name && '_Постер_ ' + newConditions.poster.name}
+        // ${newConditions?.solderGates?.name && '_Пропайка-подворотов_ ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_Пропайка-карманов_ ' + newConditions.solderPockets.name}
+        // ${newConditions?.stamp?.name && '_Штамп_ ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка-на-подрамник_ ' + newConditions.stretch.name}${newConditions?.bilateral?.name && '_Двусторонний '}`.trim()
         const newFileName = `${id}_${user.name}_${materialname}_${quality ? quality : color}_${width}x${height}mm_${count}шт${newConditions?.lamination?.name && '_Ламинация_ ' + newConditions.lamination.name}
-        ${newConditions?.cutting?.name && '_Порезка_ ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверсы_ ' + newConditions.eyelets.name} 
+        ${newConditions?.cutting?.name && '_ ' + newConditions.cutting.name }${newConditions?.eyelets?.name && '_Люверс_ ' + newConditions.eyelets.name} 
         ${newConditions?.mounting?.name && '_Монтирование_ ' + newConditions.mounting.name}${newConditions?.poster?.name && '_Постер_ ' + newConditions.poster.name}
-        ${newConditions?.solderGates?.name && '_Пропайка-подворотов_ ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_Пропайка-карманов_ ' + newConditions.solderPockets.name}
-        ${newConditions?.stamp?.name && '_Штамп_ ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_Натяжка-на-подрамник_ ' + newConditions.stretch.name}${newConditions?.bilateral?.name && '_Двусторонний '}`.trim()
+        ${newConditions?.solderGates?.name && '_подворот_ ' + newConditions.solderGates.name}${newConditions?.solderPockets?.name && '_карман_ ' + newConditions.solderPockets.name}
+        ${newConditions?.stamp?.name && '_Штамп_ ' + newConditions.stamp.name}${newConditions?.stretch?.name && '_подрамник_ ' + newConditions.stretch.name}${newConditions?.bilateral?.name && '_Двустор '}`.trim()
         const fileExtension = req.file.originalname.split('.').pop();
 
         const invalidCharacters = /[<>:"\\/|?*.]/g;
@@ -167,6 +180,34 @@ export const downloadFile = async (req, res) => {
   }
 };
 
+export const downloadFileForUser = async (req, res) => {
+    try {
+      const id = req.query.id;
+      const table = await TableModel.findById(id);
+  
+      if (!table) {
+        return res.status(404).json({ message: "File not found" });
+      }
+  
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = dirname(__filename);
+  
+      const filePath = path.join(__dirname, "..", table.file); // Отримайте шлях до файлу
+  
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ message: "File does not exist" });
+      }
+  
+      // Вказуємо назву файлу, під яким він має бути збережений на стороні клієнта
+      const fileName = table.originalFileName || 'defaultFileName.ext'; // Використовуйте за замовчуванням, якщо оригінальне ім'я не задано
+
+      return res.download(filePath, fileName);
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ message: "Server error" });
+    }
+  };
+  
 export const updateStatus = async (req, res) => {
   try {
       const { tableId, value, name, paid, descriptionDelete } = req.body;
@@ -245,26 +286,25 @@ export const updateUserStatus = async (req, res) => {
         const currentDate = new Date(); // Поточна дата
 
         const tables = await TableModel.find().select('createdAt file');
-        tables.filter((el) => {
+        tables.forEach((el) => {
             const createdAt = el.createdAt; // Дата створення з MongoDB
             const file = el.file;
             const differenceInTime = currentDate.getTime() - createdAt.getTime(); // Різниця в мілісекундах
             const differenceInDays = Math.floor(differenceInTime / (1000 * 3600 * 24)); // Різниця в днях
 
-            if(differenceInDays > 180) {
-                const newFileName = file.slice(1);
+            if (differenceInDays > 180) { // Перевірка, чи різниця в днях більше 180
+                const newFileName = file.slice(1); // Виправлення шляху файлу, якщо потрібно
                 fs.unlink(newFileName, (err) => {
                     if (err) {
-                    //   console.log(err);
+                        console.log(err); // Залогувати помилку, якщо виникла
                     }
-                  });
+                });
             }
         });
     } catch (e) {
-        console.log('Error', e);
+        console.log('Error', e); // Залогувати помилку, якщо щось пішло не так
     }
-}
-
+  }
 export const updateTableSum = async (req, res) => {
     try {
         const { tableId, newValue} = req.body;

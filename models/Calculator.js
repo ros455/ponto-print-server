@@ -7,6 +7,11 @@ const CalculatorSchema = new mongoose.Schema({
             nameUa: String,
             nameRu: String,
             price: Number,
+            prices: {
+                small: Number,
+                average: Number,
+                many: Number,
+            },
             mounting: Number,
             stamp: Number,
             stretchOnTheStretcher: Number,
@@ -39,7 +44,12 @@ const CalculatorSchema = new mongoose.Schema({
             lamination: [{
                 nameUa: String,
                 nameRu: String,
-                price: Number
+                price: Number,
+                prices: {
+                    small: Number,
+                    average: Number,
+                    many: Number,
+                },
             }],
             color: [{
                 imageColor: String,

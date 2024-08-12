@@ -191,7 +191,7 @@ export const createCalculator = async (req, res) => {
     try {
         const {price, mainId, goodsIndex, currentItemIndex} = req.body;
         console.log('currentItemIndex',currentItemIndex);
-        const calculatorId = '6467638eafb3ddd2e9090eac';
+
         // Знайти об'єкт Calculator за ідентифікатором
         const calculator = await CalculatorModel.findById(mainId);
     
@@ -391,4 +391,90 @@ export const createCalculator = async (req, res) => {
       } catch (error) {
         console.error('Error updating goods mounting:', error);
       }
+  }
+
+
+  export const updateMaterialPrice = async (req,res) => {
+    try {
+      const {mainId, goodsIndex, value, сhoice} = req.body;
+      console.log('work');
+      const calculator = await CalculatorModel.findById(mainId);
+
+      if (!calculator) {
+        // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
+        throw new Error('Calculator not found');
+      }
+
+      if(сhoice == "small") calculator.goods[goodsIndex].prices.small = value;
+      if(сhoice == "average") calculator.goods[goodsIndex].prices.average = value;
+      if(сhoice == "many") calculator.goods[goodsIndex].prices.many = value;
+
+      await calculator.save();
+
+      res.json(calculator);
+    } catch (error) {
+      console.error('Error updating goods mounting:', error);
+    }
+  }
+
+  export const updateLaminationMany = async (req,res) => {
+    try {
+      const {mainId, value, сhoice} = req.body;
+      console.log('work');
+      const calculator = await CalculatorModel.findById(mainId);
+
+      if (!calculator) {
+        // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
+        throw new Error('Calculator not found');
+      }
+
+      
+      if(сhoice == "small") {
+        console.log("small");
+        calculator.goods[0].lamination[1].prices.small = value;
+        calculator.goods[0].lamination[2].prices.small = value;
+      }
+      if(сhoice == "average") {
+        console.log("average");
+        calculator.goods[0].lamination[1].prices.average = value;
+        calculator.goods[0].lamination[2].prices.average = value;
+      }
+      if(сhoice == "many") {
+        console.log("many");
+        calculator.goods[0].lamination[1].prices.many = value;
+        calculator.goods[0].lamination[2].prices.many = value;
+      }
+      
+      await calculator.save();
+
+      console.log('calculator',calculator);
+      console.log('mainId',mainId);
+      console.log('value',value);
+      console.log('сhoice',сhoice);
+
+      res.json(calculator);
+    } catch (error) {
+      console.error('Error updating goods mounting:', error);
+    }
+  }
+
+  export const getInfoTableData = async (req,res) => {
+    try {
+      console.log('work');
+      const calculator = await CalculatorModel.find();
+
+      const findData = calculator.find((item) => item.nameUa == "Цифровий лазерний друк");
+
+      console.log('findData',findData);
+
+      if (!findData) {
+        // Об'єкт не знайдено, можна викинути помилку або обробити відповідним чином
+        throw new Error('Calculator not found');
+      }
+
+
+      res.json(findData);
+    } catch (error) {
+      console.error('Error updating goods mounting:', error);
+    }
   }
